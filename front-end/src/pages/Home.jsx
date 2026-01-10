@@ -36,12 +36,12 @@ export default function Home() {
             <Navbar/>
             <div className="hero">
                 <div className="left-content">
-                    <h1 className="title">Violina</h1>
                     <div className="webcam-box">
                         <Webcam ref={webcamRef}/>
                     </div>
                 </div>
                 <div className="right-content">
+                    <h1 className="title">Violina</h1>
                     <p className="description">
                         Practice with better posture, effortlessly.
                     </p>
