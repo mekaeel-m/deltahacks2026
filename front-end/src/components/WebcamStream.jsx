@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import Webcam from 'react-webcam';
 import io from 'socket.io-client';
 
-const SOCKET_SERVER_URL = 'http://localhost:5000';  // Change for production
+const SOCKET_SERVER_URL = 'http://localhost:5173';  // Change for production
 
 const WebcamStream = () => {
   const webcamRef = useRef(null);
