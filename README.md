@@ -1,1 +1,1 @@
-# deltahacks2026
+# Delta Hacks 2026
