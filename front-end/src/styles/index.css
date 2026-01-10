@@ -23,6 +23,7 @@ html, body {
 html {
   scrollbar-width: thin;
   scrollbar-color: #3f3f3f #1a1a1a;
+  scrollbar-gutter: stable;
 }
 
 html::-webkit-scrollbar {

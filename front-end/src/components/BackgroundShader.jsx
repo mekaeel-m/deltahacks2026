@@ -27,12 +27,12 @@ export default function BackgroundShader() {
           shader="defaults"
 
           /* 🔑 Geometry scale */
-          scale={3}
+          scale={10}
 
           /* Shader motion */
           uTime={8}
-          uSpeed={0.01}
-          uStrength={1.5}
+          uSpeed={0.002}
+          uStrength={0.7}
           uDensity={1.5}
 
           /* Orientation */
@@ -41,9 +41,9 @@ export default function BackgroundShader() {
           rotationZ={0}
 
           /* Colors */
-          color1="#242880"
-          color2="#8d7dca"
-          color3="#212121"
+          color1="#000000"
+          color2="#2c047b"
+          color3="#1f0122"
 
           reflection={0.15}
 
@@ -57,7 +57,7 @@ export default function BackgroundShader() {
           lightType="3d"
           brightness={1}
           envPreset="city"
-          grain="on"
+          grain="off"
         />
       </ShaderGradientCanvas>
     </div>
