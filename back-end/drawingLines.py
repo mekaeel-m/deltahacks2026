@@ -48,7 +48,39 @@ def download_model(url, path):
 download_model(POSE_MODEL_URL, POSE_MODEL_PATH)
 download_model(HAND_MODEL_URL, HAND_MODEL_PATH)
 
-# Pose landmark indices (MediaPipe Pose Landmarker)
+# Cache landmarker instances globally to avoid reloading models on each request
+_pose_landmarker = None
+_hand_landmarker = None
+
+def get_pose_landmarker():
+    """Get or create cached pose landmarker instance."""
+    global _pose_landmarker
+    if _pose_landmarker is None:
+        pose_options = vision.PoseLandmarkerOptions(
+            base_options=python.BaseOptions(model_asset_path=POSE_MODEL_PATH),
+            running_mode=vision.RunningMode.IMAGE,
+            num_poses=1,
+            min_pose_detection_confidence=0.5,
+            min_pose_presence_confidence=0.5,
+            min_tracking_confidence=0.5
+        )
+        _pose_landmarker = vision.PoseLandmarker.create_from_options(pose_options)
+    return _pose_landmarker
+
+def get_hand_landmarker():
+    """Get or create cached hand landmarker instance."""
+    global _hand_landmarker
+    if _hand_landmarker is None:
+        hand_options = vision.HandLandmarkerOptions(
+            base_options=python.BaseOptions(model_asset_path=HAND_MODEL_PATH),
+            running_mode=vision.RunningMode.IMAGE,
+            num_hands=2,
+            min_hand_detection_confidence=0.5,
+            min_hand_presence_confidence=0.5,
+            min_tracking_confidence=0.5
+        )
+        _hand_landmarker = vision.HandLandmarker.create_from_options(hand_options)
+    return _hand_landmarker
 class PoseLandmark:
     LEFT_SHOULDER = 11
     LEFT_ELBOW = 13
@@ -174,6 +206,8 @@ def draw_arm_lines(image, pose_landmarks, hand_landmarks_list, image_width, imag
     return image, arms_detected
 
 
+
+
 def find_forefinger_for_wrist(wrist_px, hand_landmarks_list, image_width, image_height, arm_side):
     """
     Find the forefinger tip that corresponds to the given wrist position.
@@ -239,40 +273,22 @@ def process_image(image):
     # Create MediaPipe Image
     mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=image_rgb)
     
-    # Configure pose landmarker
-    pose_options = vision.PoseLandmarkerOptions(
-        base_options=python.BaseOptions(model_asset_path=POSE_MODEL_PATH),
-        running_mode=vision.RunningMode.IMAGE,
-        num_poses=1,
-        min_pose_detection_confidence=0.5,
-        min_pose_presence_confidence=0.5,
-        min_tracking_confidence=0.5
-    )
-    
-    # Configure hand landmarker
-    hand_options = vision.HandLandmarkerOptions(
-        base_options=python.BaseOptions(model_asset_path=HAND_MODEL_PATH),
-        running_mode=vision.RunningMode.IMAGE,
-        num_hands=2,
-        min_hand_detection_confidence=0.5,
-        min_hand_presence_confidence=0.5,
-        min_tracking_confidence=0.5
-    )
+    # Use cached landmarkers
+    pose_landmarker = get_pose_landmarker()
+    hand_landmarker = get_hand_landmarker()
     
     pose_landmarks = None
     hand_landmarks_list = []
     
     # Detect pose
-    with vision.PoseLandmarker.create_from_options(pose_options) as pose_landmarker:
-        pose_results = pose_landmarker.detect(mp_image)
-        if pose_results.pose_landmarks and len(pose_results.pose_landmarks) > 0:
-            pose_landmarks = pose_results.pose_landmarks[0]  # Get first person's landmarks
+    pose_results = pose_landmarker.detect(mp_image)
+    if pose_results.pose_landmarks and len(pose_results.pose_landmarks) > 0:
+        pose_landmarks = pose_results.pose_landmarks[0]  # Get first person's landmarks
     
     # Detect hands
-    with vision.HandLandmarker.create_from_options(hand_options) as hand_landmarker:
-        hand_results = hand_landmarker.detect(mp_image)
-        if hand_results.hand_landmarks:
-            hand_landmarks_list = hand_results.hand_landmarks
+    hand_results = hand_landmarker.detect(mp_image)
+    if hand_results.hand_landmarks:
+        hand_landmarks_list = hand_results.hand_landmarks
     
     # Draw arm lines
     processed_image, arms_detected = draw_arm_lines(
@@ -301,6 +317,53 @@ def process_image(image):
         )
     
     return processed_image, result
+
+def process_image_landmarks(image):
+    
+
+    """Extract arm landmarks from an image."""
+    image_height, image_width = image.shape[:2]
+    
+    # Convert BGR to RGB for MediaPipe
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    
+    # Create MediaPipe Image
+    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=image_rgb)
+    
+    # Use cached landmarkers
+    pose_landmarker = get_pose_landmarker()
+    hand_landmarker = get_hand_landmarker()
+    
+    pose_landmarks = None
+    hand_landmarks_list = []
+    
+    # Detect pose
+    pose_results = pose_landmarker.detect(mp_image)
+    if pose_results.pose_landmarks and len(pose_results.pose_landmarks) > 0:
+        pose_landmarks = pose_results.pose_landmarks[0]  # Get first person's landmarks
+    
+    # Detect hands
+    hand_results = hand_landmarker.detect(mp_image)
+    if hand_results.hand_landmarks:
+        hand_landmarks_list = hand_results.hand_landmarks
+
+    result = {
+        'arms_detected': pose_landmarks is not None,
+        'pose_detected': pose_landmarks is not None,
+        'hands_detected': len(hand_landmarks_list) > 0,
+        'num_hands': len(hand_landmarks_list)
+    }
+
+    # Extract arm landmarks if pose detected
+    if pose_landmarks:
+        result['landmarks'] = extract_arm_landmarks(
+            pose_landmarks,
+            hand_landmarks_list,
+            image_width,
+            image_height
+        )
+
+    return result
 
 
 def extract_arm_landmarks(pose_landmarks, hand_landmarks_list, image_width, image_height):
@@ -492,6 +555,9 @@ def landmarks_only():
     Detect arms and return only the landmark coordinates (no image processing).
     Useful for applications that want to draw their own visualizations.
     """
+    print("Starting timer...")
+    start_time = time.perf_counter()  # High-precision start time
+
     try:
         image = None
         
@@ -512,7 +578,11 @@ def landmarks_only():
         if image is None:
             return jsonify({'error': 'Failed to decode image'}), 400
         
-        _, result = process_image(image)
+        result = process_image_landmarks(image)
+
+        end_time = time.perf_counter()  # High-precision end time
+        elapsed = end_time - start_time
+        print(f"Execution finished in {elapsed:.6f} seconds.")
         
         return jsonify({
             'success': True,
@@ -520,6 +590,11 @@ def landmarks_only():
         })
     
     except Exception as e:
+
+        end_time = time.perf_counter()  # High-precision end time
+        elapsed = end_time - start_time
+        print(f"Execution finished in {elapsed:.6f} seconds.")
+
         return jsonify({'error': str(e)}), 500
 
 

@@ -1,0 +1,44 @@
+{
+    "detection_result": {
+        "arms_detected": true,
+        "hands_detected": true,
+        "landmarks": {
+            "left_arm": {
+                "elbow": {
+                    "visibility": 0.9800240397453308,
+                    "x": 1819,
+                    "y": 976
+                },
+                "shoulder": {
+                    "visibility": 0.9997392296791077,
+                    "x": 1573,
+                    "y": 788
+                },
+                "wrist": {
+                    "visibility": 0.9963317513465881,
+                    "x": 1877,
+                    "y": 605
+                }
+            },
+            "right_arm": {
+                "elbow": {
+                    "visibility": 0.8456620573997498,
+                    "x": 813,
+                    "y": 957
+                },
+                "shoulder": {
+                    "visibility": 0.9998202919960022,
+                    "x": 1104,
+                    "y": 811
+                },
+                "wrist": {
+                    "visibility": 0.996006190776825,
+                    "x": 854,
+                    "y": 822
+                }
+            }
+        },
+        "num_hands": 2,
+        "pose_detected": true
+    }
+}
