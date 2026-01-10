@@ -1,25 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, forwardRef } from 'react';
 import '../styles/Webcam.css';
 
-export default function Webcam() {
+const Webcam = forwardRef((props, ref) => {
   const videoRef = useRef(null);
-  const [isActive, setIsActive] = useState(false);
   const streamRef = useRef(null);
 
-  const startWebcam = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: { ideal: 1280 }, height: { ideal: 720 } },
-        audio: false,
-      });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-      setIsActive(true);
-    } catch (error) {
-      console.error('Error accessing webcam:', error);
-      alert('Unable to access webcam. Please check permissions.');
+  const startWebcam = (stream) => {
+    streamRef.current = stream;
+    if (videoRef.current) {
+      videoRef.current.srcObject = stream;
     }
   };
 
@@ -31,7 +20,6 @@ export default function Webcam() {
     if (videoRef.current) {
       videoRef.current.srcObject = null;
     }
-    setIsActive(false);
   };
 
   useEffect(() => {
@@ -40,6 +28,11 @@ export default function Webcam() {
     };
   }, []);
 
+  // Expose methods to parent component
+  if (ref) {
+    ref.current = { startWebcam, stopWebcam };
+  }
+
   return (
     <div className="webcam-card">
       <div className="card-header">
@@ -47,21 +40,6 @@ export default function Webcam() {
         <p className="card-description">
           Start the webcam to analyze your posture in real-time
         </p>
-        {!isActive ? (
-          <button
-            onClick={startWebcam}
-            className="webcam-button start-button"
-          >
-            Start Webcam
-          </button>
-        ) : (
-          <button
-            onClick={stopWebcam}
-            className="webcam-button stop-button"
-          >
-            Stop Webcam
-          </button>
-        )}
       </div>
 
       <div className="card-content">
@@ -75,4 +53,7 @@ export default function Webcam() {
       </div>
     </div>
   );
-}
+});
+
+Webcam.displayName = 'Webcam';
+export default Webcam;

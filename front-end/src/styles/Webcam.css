@@ -22,12 +22,15 @@
     font-weight: 600;
     color: #ffffff;
     margin: 0;
+    font-family: "Inter", sans-serif;
 }
 
 .card-description {
     font-size: 0.875rem;
     color: #a3a3a3;
     margin: 0;
+    font-family: "Roboto Mono", monospace;
+}
 }
 
 .card-content {

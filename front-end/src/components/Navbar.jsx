@@ -5,7 +5,7 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="nav-left">
-        <img src="/apple.svg" alt="logo" className="logo-icon" />
+        <img src="/violinalogo.png" alt="Violina logo" className="logo-icon" />
         <span className="brand">Violina</span>
       </div>
       <div className="nav-center">

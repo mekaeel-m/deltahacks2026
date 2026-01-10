@@ -22,6 +22,7 @@
     color: #ffffff;
     margin: 0;
     line-height: 1.1;
+    font-family: "Inter", sans-serif;
 }
 
 .webcam-box {
@@ -45,6 +46,7 @@
     line-height: 1.6;
     margin: 0;
     font-weight: 600;
+    font-family: "Inter", sans-serif;
 }
 
 .subdescription {
@@ -53,4 +55,32 @@
     line-height: 1.7;
     margin: 0;
     opacity: 0.9;
+    font-family: "Roboto Mono", monospace;
+}
+
+.action-button {
+    padding: 0.875rem 2rem;
+    font-size: 0.95rem;
+    border: 1px solid #3f3f3f;
+    border-radius: 50px;
+    background-color: #262626;
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    width: fit-content;
+}
+
+.action-button:hover {
+    background-color: #323232;
+    border-color: #4a4a4a;
+}
+
+.action-button.stop {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.action-button.stop:hover {
+    background-color: rgba(239, 68, 68, 0.1);
 }
