@@ -1,6 +1,6 @@
 .hero {
     min-height: calc(100vh - 64px);
-    background: linear-gradient(135deg, #4a9ba8 0%, #a85c5c 100%);
+    background-color: #1a1a1a;
     display: flex;
     align-items: center;
     justify-content: space-between;

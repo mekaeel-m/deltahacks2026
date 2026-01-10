@@ -41,15 +41,25 @@ export default function Webcam() {
   }, []);
 
   return (
-    <div className="webcam-container">
-      <div className="video-container">
-        <video
-          ref={videoRef}
-          autoPlay
-          playsInline
-        />
+    <div className="webcam-card">
+      <div className="card-header">
+        <h2 className="card-title">Pose Detection</h2>
+        <p className="card-description">
+          Start the webcam to analyze your posture in real-time
+        </p>
       </div>
-      <div className="button-container">
+
+      <div className="card-content">
+        <div className="video-container">
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+          />
+        </div>
+      </div>
+
+      <div className="card-footer">
         {!isActive ? (
           <button
             onClick={startWebcam}

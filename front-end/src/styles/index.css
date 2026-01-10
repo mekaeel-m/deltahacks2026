@@ -11,26 +11,7 @@ html, body {
 }
 
 body {
-  background:
-    radial-gradient(
-      circle at 30% 35%,
-      rgba(0, 155, 173, 0.9) 0%,
-      rgba(0, 155, 173, 0.6) 35%,
-      rgba(0, 155, 173, 0.25) 55%,
-      rgba(0, 0, 0, 0) 70%
-    ),
-    radial-gradient(
-      circle at 80% 60%,
-      rgba(232, 53, 40, 0.9) 0%,
-      rgba(232, 53, 40, 0.7) 35%,
-      rgba(232, 53, 40, 0.35) 55%,
-      rgba(0, 0, 0, 0) 70%
-    ),
-    linear-gradient(
-      120deg,
-      #009BAD 0%,
-      #E83528 100%
-    );
+  background-color: #1a1a1a;
 }
 
 .navbar {
