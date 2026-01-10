@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=VT323&display=swap');
+
+* {
+  font-family: "Inter", sans-serif;
+  color: #ffffff;
+}
+
+.title-text {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+}
+
+.paragraph-text {
+  font-family: "Roboto Mono", monospace;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #3f3f3f #1a1a1a;
+  scrollbar-gutter: stable;
+}
+
+html::-webkit-scrollbar {
+  width: 3px;
+}
+
+html::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: #3f3f3f;
+  border-radius: 4px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;
+}
+
+body {
+  background-color: #1a1a1a;
+}
