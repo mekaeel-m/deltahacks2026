@@ -1,5 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=VT323&display=swap');
+
 * {
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=VT323&display=swap');
   font-family: "Inter", sans-serif;
+  color: #ffffff;
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background:
+    radial-gradient(
+      circle at 30% 35%,
+      rgba(0, 155, 173, 0.9) 0%,
+      rgba(0, 155, 173, 0.6) 35%,
+      rgba(0, 155, 173, 0.25) 55%,
+      rgba(0, 0, 0, 0) 70%
+    ),
+    radial-gradient(
+      circle at 80% 60%,
+      rgba(232, 53, 40, 0.9) 0%,
+      rgba(232, 53, 40, 0.7) 35%,
+      rgba(232, 53, 40, 0.35) 55%,
+      rgba(0, 0, 0, 0) 70%
+    ),
+    linear-gradient(
+      120deg,
+      #009BAD 0%,
+      #E83528 100%
+    );
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+
+
+  padding: 18px 48px;
+
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.logo {
+  display: flex;
+}
+
+/* LEFT */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.brand {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* CENTER */
+.nav-center {
+  display: flex;
+  justify-content: center;
+  gap: 200px;
+}
+
+.nav-center a {
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.nav-center a:hover {
+  opacity: 1;
+}
+
+/* RIGHT */
+.nav-right {
+  display: flex;
+  gap: 22px;
+}
+
+.icon {
+  font-size: 18px;
+  opacity: 0.85;
+  cursor: pointer;
+}
+
+.icon:hover {
+  opacity: 1;
+}
