@@ -2,6 +2,7 @@ import Navbar from "../components/Navbar.jsx";
 import Webcam from "../components/Webcam.jsx";
 import { useRef, useState } from "react";
 import "../styles/Home.css";
+import "../styles/animButton.css";
 
 
 export default function Home() {
@@ -49,19 +50,23 @@ export default function Home() {
                         Violina watches your playing and gently lets you know when your form slips, so you can stay focused on the music while improving naturally.
                     </p>
                     {!isWebcamActive ? (
-                        <button 
-                            onClick={handleStartWebcam}
-                            className="action-button"
-                        >
-                            Start Webcam
-                        </button>
+                        <div className="action-button-wrapper">
+                            <button 
+                                onClick={handleStartWebcam}
+                                className="action-button-inner"
+                            >
+                                Start Webcam
+                            </button>
+                        </div>
                     ) : (
-                        <button 
-                            onClick={handleStopWebcam}
-                            className="action-button stop"
-                        >
-                            Stop Webcam
-                        </button>
+                        <div className="action-button-wrapper stop">
+                            <button 
+                                onClick={handleStopWebcam}
+                                className="action-button-inner"
+                            >
+                                Stop Webcam
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>

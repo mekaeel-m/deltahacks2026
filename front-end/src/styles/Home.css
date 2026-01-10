@@ -56,32 +56,3 @@
     opacity: 0.9;
     font-family: "Roboto Mono", monospace;
 }
-
-.action-button {
-    padding: 0.875rem 2rem;
-    font-size: 0.95rem;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 50px;
-    background: rgba(38, 38, 38, 0.7);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    color: #ffffff;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    width: fit-content;
-}
-
-.action-button:hover {
-    background-color: #323232;
-    border-color: #4a4a4a;
-}
-
-.action-button.stop {
-    border-color: #ef4444;
-    color: #ef4444;
-}
-
-.action-button.stop:hover {
-    background-color: rgba(239, 68, 68, 0.1);
-}
