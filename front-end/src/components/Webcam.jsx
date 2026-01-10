@@ -47,19 +47,6 @@ export default function Webcam() {
         <p className="card-description">
           Start the webcam to analyze your posture in real-time
         </p>
-      </div>
-
-      <div className="card-content">
-        <div className="video-container">
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-          />
-        </div>
-      </div>
-
-      <div className="card-footer">
         {!isActive ? (
           <button
             onClick={startWebcam}
@@ -75,6 +62,16 @@ export default function Webcam() {
             Stop Webcam
           </button>
         )}
+      </div>
+
+      <div className="card-content">
+        <div className="video-container">
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+          />
+        </div>
       </div>
     </div>
   );
