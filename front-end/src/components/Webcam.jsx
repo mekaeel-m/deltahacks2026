@@ -1,15 +1,17 @@
-import { useEffect, useRef, forwardRef } from 'react';
+import { useEffect, useRef, useState, forwardRef } from 'react';
 import '../styles/Webcam.css';
 
 const Webcam = forwardRef((props, ref) => {
   const videoRef = useRef(null);
   const streamRef = useRef(null);
+  const [isActive, setIsActive] = useState(false);
 
   const startWebcam = (stream) => {
     streamRef.current = stream;
     if (videoRef.current) {
       videoRef.current.srcObject = stream;
     }
+    setIsActive(true);
   };
 
   const stopWebcam = () => {
@@ -20,6 +22,7 @@ const Webcam = forwardRef((props, ref) => {
     if (videoRef.current) {
       videoRef.current.srcObject = null;
     }
+    setIsActive(false);
   };
 
   useEffect(() => {
@@ -49,6 +52,11 @@ const Webcam = forwardRef((props, ref) => {
             autoPlay
             playsInline
           />
+          {!isActive && (
+            <div className="webcam-off-message">
+              Webcam is off
+            </div>
+          )}
         </div>
       </div>
     </div>
