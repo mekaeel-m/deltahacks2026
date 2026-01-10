@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import "../index.css";
+import "../styles/index.css";
 
 export default function Navbar() {
   return (
@@ -8,7 +8,6 @@ export default function Navbar() {
         <img src="/apple.svg" alt="logo" className="logo-icon" />
         <span className="brand">Violina</span>
       </div>
-
       <div className="nav-center">
         <Link to="/">Home</Link>
         <Link to="/tuner">Tuner</Link>
