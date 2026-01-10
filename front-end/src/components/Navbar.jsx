@@ -9,8 +9,6 @@ export default function Navbar() {
         <span className="brand">Violina</span>
       </div>
       <div className="nav-center">
-        <Link to="/">Home</Link>
-        <Link to="/tuner">Tuner</Link>
       </div>
     </nav>
   );

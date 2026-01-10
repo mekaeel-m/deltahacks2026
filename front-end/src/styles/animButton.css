@@ -1,0 +1,117 @@
+.action-button {
+    padding: 0.875rem 2rem;
+    font-size: 0.95rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50px;
+    background: rgba(38, 38, 38, 0.7);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    width: fit-content;
+}
+
+.action-button:hover {
+    background-color: #323232;
+    border-color: #4a4a4a;
+}
+
+.action-button.stop {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.action-button.stop:hover {
+    background: rgba(239, 68, 68, 0.2);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.action-button-wrapper {
+    position: relative;
+    display: inline-flex;
+    overflow: hidden;
+    border-radius: 50px;
+    padding: 2px;
+    width: fit-content;
+}
+
+.action-button-wrapper.stop {
+    position: relative;
+    display: inline-flex;
+    overflow: hidden;
+    border-radius: 50px;
+    padding: 2px;
+    width: fit-content;
+}
+
+.action-button-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: -1000%;
+    animation: spin-gradient 2s linear infinite;
+    background: conic-gradient(
+        from 90deg at 50% 50%,
+        #a2aeff 0%,
+        #3749be 50%,
+        #a2aeff 100%
+    );
+}
+
+.action-button-wrapper.stop::before {
+    content: '';
+    position: absolute;
+    inset: -1000%;
+    animation: spin-gradient-stop 2s linear infinite;
+    background: conic-gradient(
+        from 90deg at 50% 50%,
+        #ff6b6b 0%,
+        #ff0000 50%,
+        #ff6b6b 100%
+    );
+}
+
+.action-button-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    height: auto;
+    padding: 0.875rem 2rem;
+    font-size: 0.95rem;
+    border-radius: 50px;
+    background: rgba(38, 38, 38, 0.7);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.action-button-inner:hover {
+    background: rgba(50, 50, 50, 0.9);
+}
+
+@keyframes spin-gradient {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-gradient-stop {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
