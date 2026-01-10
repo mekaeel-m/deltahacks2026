@@ -378,53 +378,89 @@ def extract_arm_landmarks(pose_landmarks, hand_landmarks_list, image_width, imag
     def get_visibility(landmark):
         return getattr(landmark, 'visibility', getattr(landmark, 'presence', 1.0))
     
+    # Helper function to find forefinger for a wrist
+    def get_forefinger_for_wrist(wrist_landmark, hand_landmarks_list, image_width, image_height):
+        """Get forefinger coordinates matching a wrist position."""
+        if not hand_landmarks_list:
+            return None
+        
+        wrist_px = get_landmark_pixel_coords(wrist_landmark, image_width, image_height)
+        best_hand = None
+        min_distance = float('inf')
+        
+        for hand_landmarks in hand_landmarks_list:
+            hand_wrist = hand_landmarks[HandLandmark.WRIST]
+            hand_wrist_px = get_landmark_pixel_coords(hand_wrist, image_width, image_height)
+            
+            distance = np.sqrt(
+                (wrist_px[0] - hand_wrist_px[0])**2 + 
+                (wrist_px[1] - hand_wrist_px[1])**2
+            )
+            
+            threshold = 0.1 * np.sqrt(image_width**2 + image_height**2)
+            
+            if distance < threshold and distance < min_distance:
+                min_distance = distance
+                best_hand = hand_landmarks
+        
+        if best_hand:
+            forefinger = best_hand[HandLandmark.INDEX_FINGER_TIP]
+            return {
+                'x': int(forefinger.x * image_width),
+                'y': int(forefinger.y * image_height),
+                'visibility': get_visibility(forefinger)
+            }
+        return None
+    
     # Left arm
     left_shoulder = landmarks[PoseLandmark.LEFT_SHOULDER]
     left_elbow = landmarks[PoseLandmark.LEFT_ELBOW]
     left_wrist = landmarks[PoseLandmark.LEFT_WRIST]
     
-    if get_visibility(left_shoulder) > 0.5:
-        arm_data['left_arm']['shoulder'] = {
-            'x': int(left_shoulder.x * image_width),
-            'y': int(left_shoulder.y * image_height),
-            'visibility': get_visibility(left_shoulder)
-        }
-    if get_visibility(left_elbow) > 0.5:
-        arm_data['left_arm']['elbow'] = {
-            'x': int(left_elbow.x * image_width),
-            'y': int(left_elbow.y * image_height),
-            'visibility': get_visibility(left_elbow)
-        }
-    if get_visibility(left_wrist) > 0.5:
-        arm_data['left_arm']['wrist'] = {
-            'x': int(left_wrist.x * image_width),
-            'y': int(left_wrist.y * image_height),
-            'visibility': get_visibility(left_wrist)
-        }
+    arm_data['left_arm']['shoulder'] = {
+        'x': int(left_shoulder.x * image_width),
+        'y': int(left_shoulder.y * image_height),
+        'visibility': get_visibility(left_shoulder)
+    }
+    arm_data['left_arm']['elbow'] = {
+        'x': int(left_elbow.x * image_width),
+        'y': int(left_elbow.y * image_height),
+        'visibility': get_visibility(left_elbow)
+    }
+    arm_data['left_arm']['wrist'] = {
+        'x': int(left_wrist.x * image_width),
+        'y': int(left_wrist.y * image_height),
+        'visibility': get_visibility(left_wrist)
+    }
+    # Try to find forefinger for left arm
+    forefinger = get_forefinger_for_wrist(left_wrist, hand_landmarks_list, image_width, image_height)
+    if forefinger:
+        arm_data['left_arm']['forefinger'] = forefinger
     
     # Right arm
     right_shoulder = landmarks[PoseLandmark.RIGHT_SHOULDER]
     right_elbow = landmarks[PoseLandmark.RIGHT_ELBOW]
     right_wrist = landmarks[PoseLandmark.RIGHT_WRIST]
     
-    if get_visibility(right_shoulder) > 0.5:
-        arm_data['right_arm']['shoulder'] = {
-            'x': int(right_shoulder.x * image_width),
-            'y': int(right_shoulder.y * image_height),
-            'visibility': get_visibility(right_shoulder)
-        }
-    if get_visibility(right_elbow) > 0.5:
-        arm_data['right_arm']['elbow'] = {
-            'x': int(right_elbow.x * image_width),
-            'y': int(right_elbow.y * image_height),
-            'visibility': get_visibility(right_elbow)
-        }
-    if get_visibility(right_wrist) > 0.5:
-        arm_data['right_arm']['wrist'] = {
-            'x': int(right_wrist.x * image_width),
-            'y': int(right_wrist.y * image_height),
-            'visibility': get_visibility(right_wrist)
-        }
+    arm_data['right_arm']['shoulder'] = {
+        'x': int(right_shoulder.x * image_width),
+        'y': int(right_shoulder.y * image_height),
+        'visibility': get_visibility(right_shoulder)
+    }
+    arm_data['right_arm']['elbow'] = {
+        'x': int(right_elbow.x * image_width),
+        'y': int(right_elbow.y * image_height),
+        'visibility': get_visibility(right_elbow)
+    }
+    arm_data['right_arm']['wrist'] = {
+        'x': int(right_wrist.x * image_width),
+        'y': int(right_wrist.y * image_height),
+        'visibility': get_visibility(right_wrist)
+    }
+    # Try to find forefinger for right arm
+    forefinger = get_forefinger_for_wrist(right_wrist, hand_landmarks_list, image_width, image_height)
+    if forefinger:
+        arm_data['right_arm']['forefinger'] = forefinger
     
     return arm_data
 
@@ -449,6 +485,9 @@ def detect_arms():
         - processed_image: base64 encoded image with arm lines drawn
         - detection_result: object with detection details
     """
+    print("Starting timer...")
+    start_time = time.perf_counter()  # High-precision start time
+
     try:
         image = None
         filename = "processed_image.png"  # default
@@ -484,6 +523,10 @@ def detect_arms():
         
         # Encode processed image to base64
         processed_base64 = encode_image_to_base64(processed_image)
+
+        end_time = time.perf_counter()  # High-precision end time
+        elapsed = end_time - start_time
+        print(f"Execution finished in {elapsed:.6f} seconds.")
         
         return jsonify({
             'success': True,
@@ -492,6 +535,11 @@ def detect_arms():
         })
     
     except Exception as e:
+
+        end_time = time.perf_counter()  # High-precision end time
+        elapsed = end_time - start_time
+        print(f"Execution finished in {elapsed:.6f} seconds.")
+
         return jsonify({'error': str(e)}), 500
 
 
