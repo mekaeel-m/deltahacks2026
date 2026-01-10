@@ -1,0 +1,136 @@
+{
+  "timestamp": "2026-01-10T17:53:51.164010",
+  "baseline_images": [
+    "WIN_20260110_14_42_12_Pro.jpg",
+    "WIN_20260110_14_42_13_Pro.jpg",
+    "WIN_20260110_14_42_32_Pro.jpg",
+    "WIN_20260110_14_42_35_Pro.jpg",
+    "WIN_20260110_14_42_37_Pro.jpg",
+    "WIN_20260110_14_42_41_Pro.jpg",
+    "WIN_20260110_14_42_43_Pro.jpg",
+    "WIN_20260110_14_42_46_Pro.jpg",
+    "baggyHansen.jpg"
+  ],
+  "summary": {
+    "total_tested": 5,
+    "passed": 0,
+    "failed": 5,
+    "average_accuracy": 23.918
+  },
+  "results": [
+    {
+      "filename": "WIN_20260110_17_29_46_Pro.jpg",
+      "accuracy": 21.4,
+      "level": "poor",
+      "is_accurate": "False",
+      "message": "Accuracy: 21.4%. Issues: Adjust elbow: move right and down; Adjust wrist: move down; Adjust wrist: move down",
+      "corrections": [
+        {
+          "arm": "left_arm",
+          "joint": "elbow",
+          "message": "Adjust elbow: move right and down"
+        },
+        {
+          "arm": "left_arm",
+          "joint": "wrist",
+          "message": "Adjust wrist: move down"
+        },
+        {
+          "arm": "right_arm",
+          "joint": "wrist",
+          "message": "Adjust wrist: move down"
+        }
+      ]
+    },
+    {
+      "filename": "WIN_20260110_17_29_48_Pro.jpg",
+      "accuracy": 21.39,
+      "level": "poor",
+      "is_accurate": "False",
+      "message": "Accuracy: 21.4%. Issues: Adjust shoulder: move down; Adjust elbow: move right and down; Adjust wrist: move left and down",
+      "corrections": [
+        {
+          "arm": "left_arm",
+          "joint": "shoulder",
+          "message": "Adjust shoulder: move down"
+        },
+        {
+          "arm": "left_arm",
+          "joint": "elbow",
+          "message": "Adjust elbow: move right and down"
+        },
+        {
+          "arm": "left_arm",
+          "joint": "wrist",
+          "message": "Adjust wrist: move left and down"
+        },
+        {
+          "arm": "right_arm",
+          "joint": "wrist",
+          "message": "Adjust wrist: move down"
+        }
+      ]
+    },
+    {
+      "filename": "WIN_20260110_17_29_50_Pro.jpg",
+      "accuracy": 2.49,
+      "level": "poor",
+      "is_accurate": "False",
+      "message": "Accuracy: 2.5%. Issues: Adjust shoulder: move right and down; Adjust elbow: move right and down; Adjust wrist: move right and down",
+      "corrections": [
+        {
+          "arm": "left_arm",
+          "joint": "shoulder",
+          "message": "Adjust shoulder: move right and down"
+        },
+        {
+          "arm": "left_arm",
+          "joint": "elbow",
+          "message": "Adjust elbow: move right and down"
+        },
+        {
+          "arm": "left_arm",
+          "joint": "wrist",
+          "message": "Adjust wrist: move right and down"
+        },
+        {
+          "arm": "right_arm",
+          "joint": "shoulder",
+          "message": "Adjust shoulder: move left and down"
+        }
+      ]
+    },
+    {
+      "filename": "WIN_20260110_17_29_53_Pro.jpg",
+      "accuracy": 18.86,
+      "level": "poor",
+      "is_accurate": "False",
+      "message": "Accuracy: 18.9%. Issues: Adjust elbow: move right and down; Adjust wrist: move down; Adjust wrist: move left and down",
+      "corrections": [
+        {
+          "arm": "left_arm",
+          "joint": "elbow",
+          "message": "Adjust elbow: move right and down"
+        },
+        {
+          "arm": "left_arm",
+          "joint": "wrist",
+          "message": "Adjust wrist: move down"
+        },
+        {
+          "arm": "right_arm",
+          "joint": "wrist",
+          "message": "Adjust wrist: move left and down"
+        }
+      ]
+    },
+    {
+      "filename": "baggyHansen.jpg",
+      "accuracy": 55.45,
+      "level": "fair",
+      "is_accurate": "False",
+      "message": "Accuracy: 55.4%",
+      "corrections": []
+    }
+  ]
+}
