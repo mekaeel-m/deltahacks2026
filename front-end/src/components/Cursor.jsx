@@ -12,8 +12,8 @@ export default function SmoothFollower() {
 
   const [isHovering, setIsHovering] = useState(false);
 
-  const DOT_SMOOTHNESS = 0.2;
-  const BORDER_DOT_SMOOTHNESS = 0.1;
+  const DOT_SMOOTHNESS = 0.4;
+  const BORDER_DOT_SMOOTHNESS = 0.4;
 
   useEffect(() => {
     const handleMouseMove = (e) => {
