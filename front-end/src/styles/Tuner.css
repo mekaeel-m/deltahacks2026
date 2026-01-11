@@ -227,3 +227,26 @@
     color: rgba(255, 255, 255, 0.5);
     font-family: "Roboto Mono", monospace;
 }
+
+.viola-strings {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.viola-strings .strings-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+    font-family: "Roboto Mono", monospace;
+}
+
+.viola-strings .strings-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+}

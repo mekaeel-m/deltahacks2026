@@ -11,6 +11,14 @@ const VIOLIN_STRINGS = {
     "E5": 659.25
 };
 
+// Standard viola tuning frequencies
+const VIOLA_STRINGS = {
+    "C3": 130.81,
+    "G3": 196.00,
+    "D4": 293.66,
+    "A4": 440.00
+};
+
 export default function Tuner() {
     const [isListening, setIsListening] = useState(false);
     const [frequency, setFrequency] = useState(null);
@@ -198,6 +206,18 @@ export default function Tuner() {
                 <span className="strings-label">Violin Strings</span>
                 <div className="strings-grid">
                     {Object.entries(VIOLIN_STRINGS).map(([name, freq]) => (
+                        <div key={name} className="string-reference">
+                            <span className="string-name">{name}</span>
+                            <span className="string-freq">{freq} Hz</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <div className="viola-strings">
+                <span className="strings-label">Viola Strings</span>
+                <div className="strings-grid">
+                    {Object.entries(VIOLA_STRINGS).map(([name, freq]) => (
                         <div key={name} className="string-reference">
                             <span className="string-name">{name}</span>
                             <span className="string-freq">{freq} Hz</span>
