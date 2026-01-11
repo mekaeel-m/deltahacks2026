@@ -107,23 +107,7 @@
     gap: 1.5rem;
 }
 
-.settings-panel {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 24px;
-    padding: 2rem;
-    min-height: 300px;
-}
 
-.settings-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #ffffff;
-    margin: 0;
-    font-family: "Inter", sans-serif;
-}
 
 /* Tuner Section */
 .tuner-section {

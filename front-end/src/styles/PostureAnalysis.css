@@ -1,0 +1,247 @@
+.settings-panel {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 24px;
+    padding: 1.75rem;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.settings-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    letter-spacing: -0.02em;
+}
+
+/* Score Display */
+.score-display {
+    display: flex;
+    justify-content: center;
+    padding: 1.5rem 0;
+}
+
+.score-ring {
+    position: relative;
+    width: 140px;
+    height: 140px;
+}
+
+.score-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.score-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-width: 8;
+}
+
+.score-progress {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.5s ease, stroke 0.3s ease;
+}
+
+.score-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.score-number {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #ffffff;
+    font-family: "Inter", sans-serif;
+}
+
+.score-label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: "Roboto Mono", monospace;
+}
+
+/* Joints Container */
+.joints-container {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 16px;
+    padding: 1.25rem;
+}
+
+.joints-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1rem 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: "Inter", sans-serif;
+}
+
+.joints-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.joints-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+}
+
+.column-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.25rem;
+    font-family: "Roboto Mono", monospace;
+}
+
+/* Joint Cards */
+.joint-card {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 0.75rem;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.joint-card.joint-good {
+    border-color: rgba(16, 185, 129, 0.3);
+    background: rgba(16, 185, 129, 0.08);
+}
+
+.joint-card.joint-bad {
+    border-color: rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.08);
+}
+
+.joint-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.joint-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: capitalize;
+    font-family: "Inter", sans-serif;
+}
+
+.joint-status {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.joint-status.status-good {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.joint-status.status-bad {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.joint-deviation {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.deviation-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.deviation-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.deviation-text {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: "Roboto Mono", monospace;
+    min-width: 32px;
+    text-align: right;
+}
+
+/* Error Display */
+.error-display {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 12px;
+}
+
+.error-icon {
+    font-size: 1rem;
+}
+
+.error-text {
+    font-size: 0.8rem;
+    color: #fca5a5;
+    font-family: "Roboto Mono", monospace;
+}
+
+/* Empty State */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 2.5rem 1rem;
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 2.5rem;
+    opacity: 0.5;
+}
+
+.empty-text {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: "Roboto Mono", monospace;
+    max-width: 200px;
+    line-height: 1.5;
+}
