@@ -1,6 +1,8 @@
 import Navbar from "../components/Navbar.jsx";
 import Webcam from "../components/Webcam.jsx";
 import PostureAnalysis from "../components/PostureAnalysis.jsx";
+import TunerComponent from "../components/Tuner.jsx";
+import Metronome from "../components/Metronome.jsx";
 import { useRef, useState, useEffect } from "react";
 import "../styles/Home.css";
 import "../styles/animButton.css";
@@ -125,6 +127,19 @@ export default function Home() {
                             joints={joints}
                             error={error}
                         />
+                    </div>
+                </div>
+            </section>
+
+            <section className="snap-section" id="practice-tools-section">
+                <div className="tools-section">
+                    <div className="tools-header">
+                        <h2 className="tools-title">Practice Tools</h2>
+                        <p className="tools-subtitle">Keep your instrument in tune and maintain perfect tempo</p>
+                    </div>
+                    <div className="tools-grid">
+                        <TunerComponent />
+                        <Metronome />
                     </div>
                 </div>
             </section>
