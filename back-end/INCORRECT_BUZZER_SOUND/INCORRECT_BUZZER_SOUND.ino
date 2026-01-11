@@ -1,6 +1,6 @@
 const int piezoPin = 8;
-const int duration = 100; 
-const int frequency = 1000;
+const int duration = 300; 
+const int frequency = 800;
 
 void setup() {
   Serial.begin(9600);
@@ -12,6 +12,7 @@ void loop() {
     String command = Serial.readStringUntil('\n');
     if (command == "PLAY_TONE") {
       tone(piezoPin, frequency, duration);
+      delay(duration);
       noTone(piezoPin);
     }
     Serial.println("OK");
