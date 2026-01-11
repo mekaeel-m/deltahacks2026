@@ -14,6 +14,7 @@ export default function Home() {
     const [error, setError] = useState(null);
     const [isActive, setIsActive] = useState(false);
     const [joints, setJoints] = useState({});
+    const [lastToneScore, setLastToneScore] = useState(null);
 
     const handleStartWebcam = async () => {
         try {
@@ -59,6 +60,18 @@ export default function Home() {
             clearTimeout(timeout);
         };
     }, []);
+
+    // trigger piezo effect (SOUND) when score drops 10%<
+    useEffect(() => {
+        if (score !== null && score < 10 && score != lastToneScore) {
+            fetch('http://localhost:3001/play-tone',
+                {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json'}
+                }).catch(err => console.warn("Serial bridge unavailable:", err));
+                setLastToneScore(score);
+            }
+        }, [score, lastToneScore]); 
 
     return (
         <div className="scroll-container">
