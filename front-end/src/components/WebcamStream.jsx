@@ -30,7 +30,8 @@ const WebcamStream = () => {
           socketRef.current.emit('video_frame', screenshot);
         }
       }
-    }, 150);
+      // Adjust interval time for desired FPS
+    }, 50);
 
     return () => {
       clearInterval(interval);
