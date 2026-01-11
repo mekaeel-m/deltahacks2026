@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, forwardRef } from "react";
 import io from "socket.io-client";
 import "../styles/Webcam.css";
 
-const SOCKET_SERVER_URL = "http://localhost:5001"; // Flask backend
+const SOCKET_SERVER_URL = "http://localhost:5000"; // Flask backend
 
 const Webcam = forwardRef((props, ref) => {
   const videoRef = useRef(null);
@@ -94,7 +94,7 @@ const Webcam = forwardRef((props, ref) => {
       if (socketRef.current) {
         socketRef.current.emit("video_frame", frame);
       }
-    }, 200); // ~10 FPS
+    }, 75); // ~10 FPS
   };
 
   /* =======================
@@ -152,21 +152,25 @@ const Webcam = forwardRef((props, ref) => {
       </div>
       <div className="card-content">
         <div className="video-container">
-          <video ref={videoRef} autoPlay playsInline />
-          {!isActive && (
-            <div className="webcam-off-message">
-              Camera is off
-            </div>
+          {/* Hidden video element - only used for frame capture */}
+          <video ref={videoRef} autoPlay playsInline style={{ display: "none" }} />
+          
+          {/* Display processed image or "off" message */}
+          {processedImg ? (
+            <img
+              src={processedImg}
+              alt="Processed"
+              className="processed-frame"
+              style={{ width: '100%', height: '100%' }}
+            />
+          ) : (
+            !isActive && (
+              <div className="webcam-off-message">
+                Camera is off
+              </div>
+            )
           )}
         </div>
-
-        {processedImg && (
-          <img
-            src={processedImg}
-            alt="Processed"
-            className="processed-frame"
-          />
-        )}
       </div>
 
       {/* Hidden canvas for frame capture */}

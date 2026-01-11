@@ -13,6 +13,7 @@ export default function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/webcam" element={<WebcamStream />} />
           <Route path="/tuner" element={<Tuner/>} />
         </Routes>
       </Router>
