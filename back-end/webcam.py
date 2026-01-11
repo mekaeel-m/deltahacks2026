@@ -1,3 +1,4 @@
+
 from flask import Flask
 from flask_socketio import SocketIO, emit
 import base64
@@ -11,6 +12,7 @@ Draws lines: shoulder -> elbow -> wrist -> forefinger
 """
 
 import time
+import logging
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import cv2
@@ -23,6 +25,11 @@ from io import BytesIO
 from PIL import Image
 import os
 import urllib.request
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+_process_image_call_count = 0
 
 app = Flask(__name__)
 
@@ -37,7 +44,7 @@ POSE_MODEL_PATH = os.path.join(os.path.dirname(__file__), 'pose_landmarker.task'
 HAND_MODEL_PATH = os.path.join(os.path.dirname(__file__), 'hand_landmarker.task')
 
 # Model URLs
-POSE_MODEL_URL = "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_heavy/float16/1/pose_landmarker_heavy.task"
+POSE_MODEL_URL = "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/latest/pose_landmarker_lite.task"
 HAND_MODEL_URL = "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task"
 
 
@@ -63,7 +70,7 @@ def get_pose_landmarker():
     if _pose_landmarker is None:
         pose_options = vision.PoseLandmarkerOptions(
             base_options=python.BaseOptions(model_asset_path=POSE_MODEL_PATH),
-            running_mode=vision.RunningMode.IMAGE,
+            running_mode=vision.RunningMode.VIDEO,
             num_poses=1,
             min_pose_detection_confidence=0.5,
             min_pose_presence_confidence=0.5,
@@ -78,7 +85,7 @@ def get_hand_landmarker():
     if _hand_landmarker is None:
         hand_options = vision.HandLandmarkerOptions(
             base_options=python.BaseOptions(model_asset_path=HAND_MODEL_PATH),
-            running_mode=vision.RunningMode.IMAGE,
+            running_mode=vision.RunningMode.VIDEO,
             num_hands=2,
             min_hand_detection_confidence=0.5,
             min_hand_presence_confidence=0.5,
@@ -270,6 +277,12 @@ def process_image(image):
         processed_image: Image with arm lines drawn
         result: Dictionary with detection results
     """
+    timestamp_ms = int(time.time() * 1000)
+
+    global _process_image_call_count
+    _process_image_call_count += 1
+    logger.debug(f"process_image called - total calls: {_process_image_call_count}")
+
     image_height, image_width = image.shape[:2]
     
     # Convert BGR to RGB for MediaPipe
@@ -286,12 +299,12 @@ def process_image(image):
     hand_landmarks_list = []
     
     # Detect pose
-    pose_results = pose_landmarker.detect(mp_image)
+    pose_results = pose_landmarker.detect_for_video(mp_image, timestamp_ms)
     if pose_results.pose_landmarks and len(pose_results.pose_landmarks) > 0:
         pose_landmarks = pose_results.pose_landmarks[0]  # Get first person's landmarks
     
     # Detect hands
-    hand_results = hand_landmarker.detect(mp_image)
+    hand_results = hand_landmarker.detect_for_video(mp_image, timestamp_ms)
     if hand_results.hand_landmarks:
         hand_landmarks_list = hand_results.hand_landmarks
     
@@ -470,185 +483,6 @@ def extract_arm_landmarks(pose_landmarks, hand_landmarks_list, image_width, imag
     return arm_data
 
 
-@app.route('/health', methods=['GET'])
-def health_check():
-    """Health check endpoint."""
-    return jsonify({'status': 'healthy', 'message': 'Arm detection service is running'})
-
-
-@app.route('/detect-arms', methods=['POST'])
-def detect_arms():
-    """
-    Detect arms in an image and draw lines from shoulder to forefinger.
-    
-    Accepts:
-        - JSON with base64 encoded image: {"image": "base64_string"}
-        - Form data with image file: file field named "image"
-    
-    Returns:
-        JSON with:
-        - processed_image: base64 encoded image with arm lines drawn
-        - detection_result: object with detection details
-    """
-    print("Starting timer...")
-    start_time = time.perf_counter()  # High-precision start time
-
-    try:
-        image = None
-        filename = "processed_image.png"  # default
-        
-        # Check for JSON input (base64 image)
-        if request.is_json:
-            data = request.get_json()
-            if 'image' not in data:
-                return jsonify({'error': 'No image provided in JSON'}), 400
-            image = decode_base64_image(data['image'])
-        
-        # Check for file upload
-        elif 'image' in request.files:
-            file = request.files['image']
-            if file.filename == '':
-                return jsonify({'error': 'No file selected'}), 400
-            
-            filename = file.filename  # Use the input filename
-            # Read image from file
-            file_bytes = np.frombuffer(file.read(), np.uint8)
-            image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-        
-        else:
-            return jsonify({'error': 'No image provided. Send base64 JSON or file upload'}), 400
-        
-        if image is None:
-            return jsonify({'error': 'Failed to decode image'}), 400
-        
-        # Process the image
-        processed_image, result = process_image(image)
-
-        cv2.imwrite(f"output/{filename}", processed_image)
-        
-        # Encode processed image to base64
-        processed_base64 = encode_image_to_base64(processed_image)
-
-        end_time = time.perf_counter()  # High-precision end time
-        elapsed = end_time - start_time
-        print(f"Execution finished in {elapsed:.6f} seconds.")
-        
-        return jsonify({
-            'success': True,
-            'processed_image': f'data:image/png;base64,{processed_base64}',
-            'detection_result': result
-        })
-    
-    except Exception as e:
-
-        end_time = time.perf_counter()  # High-precision end time
-        elapsed = end_time - start_time
-        print(f"Execution finished in {elapsed:.6f} seconds.")
-
-        return jsonify({'error': str(e)}), 500
-
-
-@app.route('/detect-arms-raw', methods=['POST'])
-def detect_arms_raw():
-    """
-    Detect arms and return the processed image directly (not base64).
-    Useful for direct image display or saving.
-    """
-    print("Starting timer...")
-    start_time = time.perf_counter()  # High-precision start time
-
-    try:
-    
-        if 'image' not in request.files:
-            return jsonify({'error': 'No image file provided'}), 400
-        
-        file = request.files['image']
-        if file.filename == '':
-            return jsonify({'error': 'No file selected'}), 400
-        
-        
-        # Read image from file
-        file_bytes = np.frombuffer(file.read(), np.uint8)
-        image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-        filename = file.filename  # Use the input filename
-        
-        if image is None:
-            return jsonify({'error': 'Failed to decode image'}), 400
-        
-        # Process the image
-        processed_image, _ = process_image(image)
-
-        cv2.imwrite(f"output/{filename}", processed_image)
-        
-        # Encode to PNG and return
-        _, buffer = cv2.imencode('.png', processed_image)
-
-        end_time = time.perf_counter()  # High-precision end time
-        elapsed = end_time - start_time
-
-        print(f"Execution finished in {elapsed:.6f} seconds.")
-        
-        return send_file(
-            BytesIO(buffer.tobytes()),
-            mimetype='image/png',
-            as_attachment=False
-        )
-    
-    except Exception as e:
-        end_time = time.perf_counter()  # High-precision end time
-        elapsed = end_time - start_time
-
-        print(f"Execution finished in {elapsed:.6f} seconds.")
-        return jsonify({'error': str(e)}), 500
-
-
-@app.route('/landmarks-only', methods=['POST'])
-def landmarks_only():
-    """
-    Detect arms and return only the landmark coordinates (no image processing).
-    Useful for applications that want to draw their own visualizations.
-    """
-    print("Starting timer...")
-    start_time = time.perf_counter()  # High-precision start time
-
-    try:
-        image = None
-        
-        if request.is_json:
-            data = request.get_json()
-            if 'image' not in data:
-                return jsonify({'error': 'No image provided in JSON'}), 400
-            image = decode_base64_image(data['image'])
-        
-        elif 'image' in request.files:
-            file = request.files['image']
-            file_bytes = np.frombuffer(file.read(), np.uint8)
-            image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-        
-        else:
-            return jsonify({'error': 'No image provided'}), 400
-        
-        if image is None:
-            return jsonify({'error': 'Failed to decode image'}), 400
-        
-        result = process_image_landmarks(image)
-
-        end_time = time.perf_counter()  # High-precision end time
-        elapsed = end_time - start_time
-        print(f"Execution finished in {elapsed:.6f} seconds.")
-        
-        return jsonify({
-            'success': True,
-            'detection_result': result
-        })
-    
-    except Exception as e:
-
-        end_time = time.perf_counter()  # High-precision end time
-        elapsed = end_time - start_time
-        print(f"Execution finished in {elapsed:.6f} seconds.")
-
-        return jsonify({'error': str(e)}), 500
 
 socketio = SocketIO(app, cors_allowed_origins="*")  # Allow cross-origin for dev
 
@@ -677,18 +511,18 @@ def handle_video_frame(data):
     frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     
     if frame is not None:
-        # Process the frame here (example: grayscale conversion)
+        start_time = time.perf_counter()
         processed_frame, _ = process_image(frame)
-        # Or apply any OpenCV/ML model, e.g., face detection
+        end_time = time.perf_counter()
+        elapsed = end_time - start_time
+        logger.debug(f"Frame processing finished in {elapsed:.6f} seconds.")
         
-        # Optional: Encode and send processed frame back
+        # Encode and send processed frame back
         _, buffer = cv2.imencode('.jpg', processed_frame)
         processed_b64 = base64.b64encode(buffer).decode('utf-8')
         emit('processed_frame', f'data:image/jpeg;base64,{processed_b64}')
-        
-        print('Frame processed')
     else:
-        print('Invalid frame received')
+        logger.warning('Invalid frame received')
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, host='0.0.0.0', use_reloader=False, port=5001, debug=True)

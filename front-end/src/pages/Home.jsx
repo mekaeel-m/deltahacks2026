@@ -1,6 +1,6 @@
 import Navbar from "../components/Navbar.jsx";
 import Webcam from "../components/Webcam.jsx";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import "../styles/Home.css";
 import "../styles/animButton.css";
 
@@ -8,6 +8,7 @@ import "../styles/animButton.css";
 export default function Home() {
     const [isWebcamActive, setIsWebcamActive] = useState(false);
     const webcamRef = useRef(null);
+    const webcamSectionRef = useRef(null);
 
     const handleStartWebcam = async () => {
         try {
@@ -20,8 +21,8 @@ export default function Home() {
                 setIsWebcamActive(true);
             }
         } catch (error) {
-            console.error('Error accessing webcam:', error);
-            alert('Unable to access webcam. Please check permissions.');
+            console.error('Error accessing camera:', error);
+            alert('Unable to access camera. Please check permissions.');
         }
     };
 
@@ -32,44 +33,71 @@ export default function Home() {
         }
     };
 
+    const handleGetStarted = () => {
+        webcamSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    useEffect(() => {
+        const container = document.querySelector('.scroll-container');
+        if (!container) return;
+        let timeout;
+        const handleScroll = () => {
+            container.classList.add('smooth-scroll');
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                container.classList.remove('smooth-scroll');
+            }, 900); // duration matches transition
+        };
+        container.addEventListener('wheel', handleScroll, { passive: true });
+        return () => {
+            container.removeEventListener('wheel', handleScroll);
+            clearTimeout(timeout);
+        };
+    }, []);
+
     return (
-        <>
-            <Navbar/>
-            <div className="hero">
-                <div className="left-content">
-                    <div className="webcam-box">
-                        <Webcam ref={webcamRef}/>
-                    </div>
-                </div>
-                <div className="right-content">
-                    <h1 className="title">Violina</h1>
-                    <p className="description">
-                        Practice with better posture, effortlessly.
-                    </p>
-                    <p className="subdescription">
-                        Violina watches your playing and gently lets you know when your form slips, so you can stay focused on the music while improving naturally.
-                    </p>
-                    {!isWebcamActive ? (
+        <div className="scroll-container">
+            <section className="snap-section">
+                <Navbar/>
+                <div className="hero">
+                    <div className="left-content">
+                        <h1 className="title">Violina</h1>
+                        <p className="description">
+                            Practice with better posture, effortlessly.
+                        </p>
+                        <p className="subdescription">
+                            Violina watches your playing and gently lets you know when your form slips, so you can stay focused on the music while improving naturally.
+                        </p>
                         <div className="action-button-wrapper">
                             <button 
-                                onClick={handleStartWebcam}
+                                onClick={handleGetStarted}
                                 className="action-button-inner"
                             >
-                                Start Webcam
+                                Get Started
                             </button>
                         </div>
-                    ) : (
-                        <div className="action-button-wrapper stop">
-                            <button 
-                                onClick={handleStopWebcam}
-                                className="action-button-inner"
-                            >
-                                Stop Webcam
-                            </button>
-                        </div>
-                    )}
+                    </div>
                 </div>
-            </div>
-        </>
+            </section>
+
+            <section className="snap-section" id="pose-detection-section" ref={webcamSectionRef}>
+                <div className="webcam-section">
+                    <div className="webcam-left">
+                        <div className="webcam-box">
+                            <Webcam 
+                              ref={webcamRef}
+                              onStartCamera={handleStartWebcam}
+                              onStopCamera={handleStopWebcam}
+                            />
+                        </div>
+                    </div>
+                    <div className="webcam-right">
+                        <div className="settings-panel">
+                            <h2 className="settings-title">Settings</h2>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
     )
 }

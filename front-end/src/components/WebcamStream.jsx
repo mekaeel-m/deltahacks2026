@@ -2,8 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import Webcam from 'react-webcam';
 import io from 'socket.io-client';
 
-const SOCKET_SERVER_URL = 'http://localhost:5001';  // Change for production
-  // NOTE: need 5001 for percent due to FLASK API 
+const SOCKET_SERVER_URL = 'http://localhost:5173';  // Change for production
 
 const WebcamStream = () => {
   const webcamRef = useRef(null);
@@ -30,39 +29,13 @@ const WebcamStream = () => {
     // Capture and send frames every ~100ms (10 FPS; adjust as needed)
     const interval = setInterval(async() => {
       if (webcamRef.current) {
-        try {
-          const screenshot = webcamRef.current.getScreenshot(); 
-          if(screenshot) {
-            setLoading(true);
-
-            const response = await fetch(`${SOCKET_SERVER_URL}/score`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              }, 
-              body: JSON.stringify({
-                image: screenshot
-              })
-            });
-
-            if (!response.ok) {
-              const data = await response.json();
-              setError(data.error || 'Failed to get score'); 
-              setScore(null);
-            } else {
-              const data = await response.json();
-              setScore(data.score); 
-              setError(null); 
-            }
+        const screenshot = webcamRef.current.getScreenshot();  // Returns base64 JPEG data URL
+        if (screenshot) {
+          socketRef.current.emit('video_frame', screenshot);
         }
-      } catch (err) {
-        setError('Connection error: ' + err.message);
-        setScore(null);
-      } finally {
-        setLoading(false);
       }
-    }
-    }, 150);
+      // Adjust interval time for desired FPS
+    }, 50);
 
     return () => {
       clearInterval(interval);

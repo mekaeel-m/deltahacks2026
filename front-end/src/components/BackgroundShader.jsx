@@ -9,9 +9,20 @@ export default function BackgroundShader() {
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: -1
+        zIndex: -1,
+        animation: "fadeIn 2s ease-in"
       }}
     >
+      <style>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+      `}</style>
       <ShaderGradientCanvas
         style={{
           width: "100%",
@@ -22,7 +33,7 @@ export default function BackgroundShader() {
         pointerEvents="none"
       >
         <ShaderGradient
-          animate="on"
+          animate="off"
           type="waterPlane"
           shader="defaults"
 
