@@ -583,71 +583,54 @@ def get_pose_score():
         return jsonify({'score': 0, 'error': str(e)}), 500
 
 
-@app.route('/score-detailed', methods=['POST'])
-def get_pose_score_detailed():
+def get_pose_score_detailed(landmarks, image_width, image_height):
     """
-    Get accuracy score with detailed joint-level feedback.
+    Calculate accuracy score with detailed joint-level feedback.
     
-    Accepts:
-        - JSON with base64 image: {"image": "base64_string"}
-        - Form data with image file
+    Args:
+        landmarks: Dictionary with landmark data
+            {
+              "left_arm": {"shoulder": {x, y}, ...},
+              "right_arm": {...}
+            }
+        image_width: Width of the image in pixels
+        image_height: Height of the image in pixels
     
     Returns:
-        JSON with overall score and per-joint accuracy details
+        Tuple: (score, accuracy_level, joints_feedback)
+            score (float): Accuracy percentage 0-100
+            accuracy_level (str): 'excellent', 'good', 'fair', or 'poor'
+            joints_feedback (dict): Per-joint accuracy details
     """
-    try:
-        comparator = get_comparator()
-        
-        if not _baseline_loaded:
-            return jsonify({
-                'score': 0,
-                'error': 'No baseline loaded',
-                'joints': {}
-            }), 400
-        
-        image = None
-        
-        if request.is_json:
-            data = request.get_json()
-            if 'image' not in data:
-                return jsonify({'score': 0, 'error': 'No image provided', 'joints': {}}), 400
-            image = decode_base64_image(data['image'])
-        
-        elif 'image' in request.files:
-            file = request.files['image']
-            file_bytes = np.frombuffer(file.read(), np.uint8)
-            image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-        
-        else:
-            return jsonify({'score': 0, 'error': 'No image provided', 'joints': {}}), 400
-        
-        if image is None:
-            return jsonify({'score': 0, 'error': 'Failed to decode image', 'joints': {}}), 400
-        
-        # Compare pose and get detailed feedback
-        result = comparator.compare_image(image)
-        
-        # Build joint feedback dictionary
-        # Format: {arm}_{joint} -> {is_accurate, deviation, message}
-        joints_feedback = {}
-        for fb in result.joint_feedback:
-            key = f"{fb.arm_name}_{fb.joint_name}"
-            joints_feedback[key] = {
-                'is_accurate': bool(fb.is_accurate),
-                'deviation': round(float(fb.deviation), 4),
-                'message': fb.message,
-                'arm': fb.arm_name,
-                'joint': fb.joint_name
-            }
-        
-        return jsonify({
-            'score': round(float(result.overall_accuracy), 2),
-            'accuracy_level': result.accuracy_level.value,
-            'joints': joints_feedback
-        })
+    # check errMsg 
+    errMsg = ""
     
-    except Exception as e:
-        return jsonify({'score': 0, 'error': str(e), 'joints': {}}), 500
+    if not landmarks: # empty landmarks
+        errMsg += "No landmarks provided!\n"
+    
+    comparator = get_comparator()
+    
+    if not _baseline_loaded:
+        return 0, 'unknown', {}
+    
+    result = comparator.compare_pose(landmarks, image_width, image_height)
+    
+    # Build joint feedback dictionary
+    # Format: {arm}_{joint} -> {is_accurate, deviation, message}
+    joints_feedback = {}
+    for fb in result.joint_feedback:
+        key = f"{fb.arm_name}_{fb.joint_name}"
+        joints_feedback[key] = {
+            'is_accurate': bool(fb.is_accurate),
+            'deviation': round(float(fb.deviation), 4),
+            'message': fb.message,
+            'arm': fb.arm_name,
+            'joint': fb.joint_name
+        }
+    if not joints_feedback: # joints not
+        errMsg += "Joint feedback failed!\n"
+    
+    return round(float(result.overall_accuracy), 2), result.accuracy_level.value, joints_feedback, errMsg
 
 
 if __name__ == '__main__':

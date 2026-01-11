@@ -73,10 +73,24 @@ const Webcam = forwardRef((props, ref) => {
       console.log("Connected to backend");
     });
 
-    // When the backend returns a processed frame, unset waiting flag
-    socketRef.current.on("processed_frame", (data) => {
-      try { console.debug("received processed_frame: bytes=", data ? data.length : 0); } catch (e) {}
-      setProcessedImg(data);
+    socketRef.current.on("pose_analysis", (data) => {
+      console.debug("received pose_analysis");
+
+      if (data.processed_image) {
+        setProcessedImg(data.processed_image);
+      }
+
+      if (data.error) {
+        props.setError(data.error);
+        props.setScore(null);
+        props.setJoints({});
+      } else {
+        props.setError(null);
+        props.setScore(data.score ?? null);
+        props.setJoints(data.joints || {});
+      }
+
+      // Release backpressure
       waitingRef.current = false;
     });
   };
@@ -127,7 +141,7 @@ const Webcam = forwardRef((props, ref) => {
           socketRef.current.emit("video_frame", dataUrl);
           
           // ALSO send to correctForm.py via HTTP POST (for accuracy score)
-          sendFrameForScore(dataUrl);
+          // sendFrameForScore(dataUrl);
         }
       } catch (e) {
         // ignore and continue
@@ -139,35 +153,35 @@ const Webcam = forwardRef((props, ref) => {
   };
 
   // Send frame to correctForm.py to get accuracy score with joint details
-  const sendFrameForScore = async (dataUrl) => {
-    try {
-      const response = await fetch(`${SCORE_SERVER_URL}/score-detailed`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          image: dataUrl
-        })
-      });
+  // const sendFrameForScore = async (dataUrl) => {
+  //   try {
+  //     const response = await fetch(`${SCORE_SERVER_URL}/score-detailed`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         image: dataUrl
+  //       })
+  //     });
 
-      if (!response.ok) {
-        const data = await response.json();
-        props.setError(data.error || 'Failed to get score');
-        props.setScore(null);
-        props.setJoints({});
-      } else {
-        const data = await response.json();
-        props.setScore(data.score);
-        props.setJoints(data.joints || {});
-        props.setError(null);
-      }
-    } catch (err) {
-      props.setError('Score service unavailable');
-      props.setScore(null);
-      props.setJoints({});
-    }
-  };
+  //     if (!response.ok) {
+  //       const data = await response.json();
+  //       props.setError(data.error || 'Failed to get score');
+  //       props.setScore(null);
+  //       props.setJoints({});
+  //     } else {
+  //       const data = await response.json();
+  //       props.setScore(data.score);
+  //       props.setJoints(data.joints || {});
+  //       props.setError(null);
+  //     }
+  //   } catch (err) {
+  //     props.setError('Score service unavailable');
+  //     props.setScore(null);
+  //     props.setJoints({});
+  //   }
+  // };
 
   /* =======================
      Cleanup
