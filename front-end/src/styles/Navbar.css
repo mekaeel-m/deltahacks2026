@@ -1,6 +1,5 @@
 .navbar {
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 100;
 
   display: grid;

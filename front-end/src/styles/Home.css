@@ -2,17 +2,17 @@
     min-height: calc(100vh - 64px);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     padding: 4rem 3rem;
     gap: 3rem;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .left-content {
-    flex: 7;
+    flex: 0 1 60%;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 .title {
@@ -22,21 +22,6 @@
     margin: 0;
     line-height: 1.1;
     font-family: "Inter", sans-serif;
-}
-
-.webcam-box {
-    border-radius: 24px;
-    padding: 0.25rem;
-    overflow: hidden;
-    aspect-ratio: 1 / 0.75;
-}
-
-.right-content {
-    flex: 3;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 1.5rem;
 }
 
 .description {
@@ -55,4 +40,53 @@
     margin: 0;
     opacity: 0.9;
     font-family: "Roboto Mono", monospace;
+}
+
+/* Webcam Section */
+.webcam-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 4rem 3rem;
+    gap: 3rem;
+}
+
+.webcam-left {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.webcam-box {
+    border-radius: 24px;
+    padding: 0.25rem;
+    overflow: hidden;
+    aspect-ratio: 1 / 0.75;
+}
+
+.webcam-right {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.settings-panel {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    padding: 2rem;
+    min-height: 300px;
+}
+
+.settings-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+    font-family: "Inter", sans-serif;
 }
