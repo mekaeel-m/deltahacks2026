@@ -91,15 +91,21 @@ class PoseComparator:
     def normalize_landmarks(self, landmarks: Dict, image_width: int, image_height: int) -> Dict:
         """Normalize landmark coordinates to 0-1 range."""
         normalized = {}
+
+        print(landmarks)
+        print(landmarks.items())
         
         for arm_name, arm_data in landmarks.items():
             normalized[arm_name] = {}
-            for joint_name, joint_data in arm_data.items():
-                normalized[arm_name][joint_name] = {
-                    'x': joint_data['x'] / image_width,
-                    'y': joint_data['y'] / image_height,
-                    'visibility': joint_data.get('visibility', 1.0)
-                }
+            if arm_data is bool:
+                return normalized
+            else:
+                for joint_name, joint_data in arm_data.items():
+                    normalized[arm_name][joint_name] = {
+                        'x': joint_data['x'] / image_width,
+                        'y': joint_data['y'] / image_height,
+                        'visibility': joint_data.get('visibility', 1.0)
+                    }
         
         return normalized
     
@@ -175,7 +181,54 @@ class PoseComparator:
         
         baseline_landmarks = self.baseline_data['baseline_landmarks']
         baseline_angles = self.baseline_data['baseline_angles']
-        
+
+        if(current_landmarks is False):
+            return PoseComparisonResult(
+                overall_accuracy=0,
+                accuracy_level=AccuracyLevel.INVALID,
+                is_accurate=False,
+                joint_feedback=[],
+                angle_feedback={},
+                summary_message="No pose detected",
+                detailed_report={'error': 'No pose detected'}
+            
+            )
+        elif ("left_arm" in current_landmarks) or ("right_arm" in current_landmarks):
+            if("elbow" in current_landmarks["left_arm"]) and ("elbow" in current_landmarks["right_arm"]):
+                if ("shoulder" in current_landmarks["left_arm"]) and ("shoulder" in current_landmarks["right_arm"]):
+                    if ("wrist" in current_landmarks["left_arm"]) and ("wrist" in current_landmarks["right_arm"]):
+                        pass
+                    else:
+                        return PoseComparisonResult(
+                            overall_accuracy=0,
+                            accuracy_level=AccuracyLevel.INVALID,
+                            is_accurate=False,
+                            joint_feedback=[],
+                            angle_feedback={},
+                            summary_message="Incomplete pose detected",
+                            detailed_report={'error': 'Incomplete pose detected'}
+                        )
+                else:
+                    return PoseComparisonResult(
+                        overall_accuracy=0,
+                        accuracy_level=AccuracyLevel.INVALID,
+                        is_accurate=False,
+                        joint_feedback=[],
+                        angle_feedback={},
+                        summary_message="Incomplete pose detected",
+                        detailed_report={'error': 'Incomplete pose detected'}
+                    )
+            else:
+                return PoseComparisonResult(
+                    overall_accuracy=0,
+                    accuracy_level=AccuracyLevel.INVALID,
+                    is_accurate=False,
+                    joint_feedback=[],
+                    angle_feedback={},
+                    summary_message="Incomplete pose detected", 
+                    detailed_report={'error': 'Incomplete pose detected'}
+                )
+                
         # Normalize current landmarks
         normalized_current = self.normalize_landmarks(
             current_landmarks, image_width, image_height

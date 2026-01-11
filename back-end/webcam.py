@@ -25,6 +25,7 @@ from io import BytesIO
 from PIL import Image
 import os
 import urllib.request
+from correctForm import get_pose_score_detailed
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -34,9 +35,9 @@ _process_image_call_count = 0
 app = Flask(__name__)
 
 # Custom drawing specs for arm lines
-ARM_LINE_COLOR = (255, 0, 0)  # Green in BGR // NOTE: temp switch to BLUE
+ARM_LINE_COLOR = (142, 5, 46)  # Green in BGR // NOTE: temp switch to BLUE
 ARM_LINE_THICKNESS = 3
-POINT_COLOR = (255, 255, 255)  # Red in BGR // NOTE: temp switch to WHITE
+POINT_COLOR = (61, 2, 20)  # Red in BGR // NOTE: temp switch to WHITE
 POINT_RADIUS = 5
 
 # Model paths
@@ -512,15 +513,40 @@ def handle_video_frame(data):
     
     if frame is not None:
         start_time = time.perf_counter()
-        processed_frame, _ = process_image(frame)   # shoulders, arms, etc.
+        processed_frame, frame_landmarks = process_image(frame)   # shoulders, arms, etc.
         end_time = time.perf_counter()
         elapsed = end_time - start_time
         logger.debug(f"Frame processing finished in {elapsed:.6f} seconds.")
         
+
         # Encode and send processed frame back
         _, buffer = cv2.imencode('.jpg', processed_frame)
         processed_b64 = base64.b64encode(buffer).decode('utf-8')
-        emit('processed_frame', f'data:image/jpeg;base64,{processed_b64}')
+        data_url = f'data:image/jpeg;base64,{processed_b64}'
+
+        height, width = frame.shape[:2]
+
+        frame_landmarks = frame_landmarks.get('landmarks', None)
+
+        score, accuracy_level, joints_feedback, error_msg = get_pose_score_detailed(frame_landmarks, width, height)
+
+        analysis_payload = {
+            'processed_image': data_url,
+            'score': score,
+            'accuracy level': accuracy_level,
+            'joints': joints_feedback
+        }
+
+        if accuracy_level is not None:
+            analysis_payload['accuracy_level'] = accuracy_level
+        if error_msg is not None:
+            analysis_payload['error'] = error_msg
+        if joints_feedback is not None:
+            analysis_payload['joints'] = joints_feedback
+        if score is not None:
+            analysis_payload['score'] = score
+
+        emit('pose_analysis', analysis_payload)
     else:
         logger.warning('Invalid frame received')
 

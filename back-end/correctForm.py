@@ -633,7 +633,6 @@ def get_pose_score_detailed(landmarks, image_width, image_height):
     return round(float(result.overall_accuracy), 2), result.accuracy_level.value, joints_feedback, errMsg
 
 
-
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5002))  # Use 5002 to avoid conflict with webcam.py (5001)
     debug = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
