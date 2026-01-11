@@ -1,3 +1,37 @@
+/* Scroll Snap Container */
+.scroll-container {
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: auto;
+    transition: scroll-behavior 2s cubic-bezier(0.22, 1, 0.36, 1);
+    scrollbar-width: thin;
+    scrollbar-color: #3f3f3f transparent;
+}
+
+.scroll-container.smooth-scroll {
+    scroll-behavior: smooth;
+}
+
+.scroll-container::-webkit-scrollbar {
+    width: 3px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+    background: #3f3f3f;
+    border-radius: 4px;
+}
+
+.snap-section {
+    height: 100vh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+}
+
 .hero {
     min-height: calc(100vh - 64px);
     display: flex;
@@ -16,35 +50,35 @@
 }
 
 .title {
-    font-size: 4rem;
-    font-weight: 700;
+    font-size: 9rem;
+    font-weight: 800;
     color: #ffffff;
     margin: 0;
-    line-height: 1.1;
+    line-height: 1.08;
     font-family: "Inter", sans-serif;
 }
 
 .description {
-    font-size: 1.5rem;
+    font-size: 2.1rem;
     color: #ffffff;
-    line-height: 1.6;
+    line-height: 1.5;
     margin: 0;
-    font-weight: 600;
+    font-weight: 700;
     font-family: "Inter", sans-serif;
 }
 
 .subdescription {
-    font-size: 1.1rem;
+    font-size: 1.35rem;
     color: #ffffff;
     line-height: 1.7;
     margin: 0;
-    opacity: 0.9;
+    opacity: 0.92;
     font-family: "Roboto Mono", monospace;
 }
 
 /* Webcam Section */
 .webcam-section {
-    min-height: 100vh;
+    height: 100%;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -89,4 +123,28 @@
     color: #ffffff;
     margin: 0;
     font-family: "Inter", sans-serif;
+}
+
+/* Tuner Section */
+.tuner-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 4rem 3rem;
+    gap: 3rem;
+}
+
+.tuner-left {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.tuner-right {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }

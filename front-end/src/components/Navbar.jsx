@@ -10,6 +10,11 @@ export default function Navbar() {
       </div>
       <div className="nav-center">
       </div>
+      <div className="nav-right">
+        <button className="nav-link" onClick={() => document.getElementById('pose-detection-section')?.scrollIntoView({behavior: 'smooth'})}>Form</button>
+        <button className="nav-link" onClick={() => document.getElementById('tuner-section')?.scrollIntoView({behavior: 'smooth'})}>Tuner</button>
+        <button className="nav-link" onClick={() => document.getElementById('metronome-section')?.scrollIntoView({behavior: 'smooth'})}>Metronome</button>
+      </div>
     </nav>
   );
 }

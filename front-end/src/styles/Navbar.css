@@ -70,3 +70,21 @@
 .icon:hover {
   opacity: 1;
 }
+
+.nav-link {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0 8px;
+  opacity: 0.88;
+  transition: opacity 0.2s;
+}
+
+.nav-link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}

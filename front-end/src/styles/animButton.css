@@ -84,7 +84,7 @@
     padding: 0.875rem 2rem;
     font-size: 0.95rem;
     border-radius: 50px;
-    background: rgba(38, 38, 38, 0.7);
+    background: rgb(38, 29, 55);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
     color: #ffffff;
@@ -95,7 +95,7 @@
 }
 
 .action-button-inner:hover {
-    background: rgba(50, 50, 50, 0.9);
+    background: rgba(69, 69, 69, 0.9);
 }
 
 @keyframes spin-gradient {
