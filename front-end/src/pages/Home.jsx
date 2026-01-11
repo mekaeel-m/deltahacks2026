@@ -20,8 +20,8 @@ export default function Home() {
                 setIsWebcamActive(true);
             }
         } catch (error) {
-            console.error('Error accessing webcam:', error);
-            alert('Unable to access webcam. Please check permissions.');
+            console.error('Error accessing camera:', error);
+            alert('Unable to access camera. Please check permissions.');
         }
     };
 
@@ -55,7 +55,7 @@ export default function Home() {
                                 onClick={handleStartWebcam}
                                 className="action-button-inner"
                             >
-                                Start Webcam
+                                Start Camera
                             </button>
                         </div>
                     ) : (
@@ -64,7 +64,7 @@ export default function Home() {
                                 onClick={handleStopWebcam}
                                 className="action-button-inner"
                             >
-                                Stop Webcam
+                                Stop Camera
                             </button>
                         </div>
                     )}

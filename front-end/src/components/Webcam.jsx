@@ -41,7 +41,7 @@ const Webcam = forwardRef((props, ref) => {
       <div className="card-header">
         <h2 className="card-title">Pose Detection</h2>
         <p className="card-description">
-          Start the webcam to analyze your posture in real-time
+          Start the camera to analyze your posture in real-time
         </p>
       </div>
 
@@ -54,7 +54,7 @@ const Webcam = forwardRef((props, ref) => {
           />
           {!isActive && (
             <div className="webcam-off-message">
-              Webcam is off
+              Camera is off
             </div>
           )}
         </div>
