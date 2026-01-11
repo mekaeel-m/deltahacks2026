@@ -648,7 +648,7 @@ def landmarks_only():
 
 if __name__ == '__main__':
     # Run the Flask app
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 5500))
     debug = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
     
     print(f"Starting Arm Detection Flask App on port {port}")

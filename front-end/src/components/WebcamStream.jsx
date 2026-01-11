@@ -30,7 +30,7 @@ const WebcamStream = () => {
           socketRef.current.emit('video_frame', screenshot);
         }
       }
-    }, 100);
+    }, 150);
 
     return () => {
       clearInterval(interval);
