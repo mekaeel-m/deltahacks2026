@@ -79,8 +79,11 @@ export default function Home() {
                 <Navbar/>
                 <div className="hero">
                     <div className="left-content">
-                        <h1 className="title">Violina</h1>
-                        <p className="description">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                            <h1 className="title">Violina</h1>
+                            <img src="/violinalogoenhanced.png" alt="Violina Logo" style={{ height: '15rem', width: 'auto' }} />
+                        </div>
+                        <p className="subdescription">
                             Practice with better posture, effortlessly.
                         </p>
                         <p className="subdescription">
