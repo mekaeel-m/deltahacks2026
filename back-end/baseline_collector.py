@@ -381,7 +381,7 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(description='Collect baseline pose data from images')
     parser.add_argument('--folder', '-f', type=str, 
-                        default=os.path.join(os.path.dirname(__file__), 'testing_images'),
+                        default=os.path.join(os.path.dirname(__file__), 'baseline_images'),
                         help='Path to folder containing baseline images')
     parser.add_argument('--output', '-o', type=str, 
                         default=None,

@@ -583,8 +583,75 @@ def get_pose_score():
         return jsonify({'score': 0, 'error': str(e)}), 500
 
 
+@app.route('/score-detailed', methods=['POST'])
+def get_pose_score_detailed():
+    """
+    Get accuracy score with detailed joint-level feedback.
+    
+    Accepts:
+        - JSON with base64 image: {"image": "base64_string"}
+        - Form data with image file
+    
+    Returns:
+        JSON with overall score and per-joint accuracy details
+    """
+    try:
+        comparator = get_comparator()
+        
+        if not _baseline_loaded:
+            return jsonify({
+                'score': 0,
+                'error': 'No baseline loaded',
+                'joints': {}
+            }), 400
+        
+        image = None
+        
+        if request.is_json:
+            data = request.get_json()
+            if 'image' not in data:
+                return jsonify({'score': 0, 'error': 'No image provided', 'joints': {}}), 400
+            image = decode_base64_image(data['image'])
+        
+        elif 'image' in request.files:
+            file = request.files['image']
+            file_bytes = np.frombuffer(file.read(), np.uint8)
+            image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+        
+        else:
+            return jsonify({'score': 0, 'error': 'No image provided', 'joints': {}}), 400
+        
+        if image is None:
+            return jsonify({'score': 0, 'error': 'Failed to decode image', 'joints': {}}), 400
+        
+        # Compare pose and get detailed feedback
+        result = comparator.compare_image(image)
+        
+        # Build joint feedback dictionary
+        # Format: {arm}_{joint} -> {is_accurate, deviation, message}
+        joints_feedback = {}
+        for fb in result.joint_feedback:
+            key = f"{fb.arm_name}_{fb.joint_name}"
+            joints_feedback[key] = {
+                'is_accurate': bool(fb.is_accurate),
+                'deviation': round(float(fb.deviation), 4),
+                'message': fb.message,
+                'arm': fb.arm_name,
+                'joint': fb.joint_name
+            }
+        
+        return jsonify({
+            'score': round(float(result.overall_accuracy), 2),
+            'accuracy_level': result.accuracy_level.value,
+            'joints': joints_feedback
+        })
+    
+    except Exception as e:
+        return jsonify({'score': 0, 'error': str(e), 'joints': {}}), 500
+
+
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5001))
+    port = int(os.environ.get('PORT', 5002))  # Use 5002 to avoid conflict with webcam.py (5001)
     debug = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
     
     print(f"Starting Form Correction Flask App on port {port}")
@@ -593,6 +660,7 @@ if __name__ == '__main__':
     print("  POST /collect-baseline    - Collect baseline from folder")
     print("  POST /set-baseline        - Set baseline from single image or file")
     print("  GET  /get-baseline        - Get current baseline data")
+    print("  POST /score               - Get just the accuracy percentage (quick score)")
     print("  POST /compare-pose        - Compare pose and get accuracy flag")
     print("  POST /compare-pose-visual - Compare pose with visual overlay")
     print("  POST /configure           - Configure comparison thresholds")

@@ -34,9 +34,9 @@ _process_image_call_count = 0
 app = Flask(__name__)
 
 # Custom drawing specs for arm lines
-ARM_LINE_COLOR = (0, 255, 0)  # Green in BGR
+ARM_LINE_COLOR = (255, 0, 0)  # Green in BGR // NOTE: temp switch to BLUE
 ARM_LINE_THICKNESS = 3
-POINT_COLOR = (0, 0, 255)  # Red in BGR
+POINT_COLOR = (255, 255, 255)  # Red in BGR // NOTE: temp switch to WHITE
 POINT_RADIUS = 5
 
 # Model paths
@@ -512,7 +512,7 @@ def handle_video_frame(data):
     
     if frame is not None:
         start_time = time.perf_counter()
-        processed_frame, _ = process_image(frame)
+        processed_frame, _ = process_image(frame)   # shoulders, arms, etc.
         end_time = time.perf_counter()
         elapsed = end_time - start_time
         logger.debug(f"Frame processing finished in {elapsed:.6f} seconds.")

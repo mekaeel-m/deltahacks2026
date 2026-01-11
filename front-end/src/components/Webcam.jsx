@@ -2,7 +2,8 @@ import { useEffect, useRef, useState, forwardRef } from "react";
 import io from "socket.io-client";
 import "../styles/Webcam.css";
 
-const SOCKET_SERVER_URL = "http://localhost:5001"; // Flask backend
+const SOCKET_SERVER_URL = "http://localhost:5001"; // Flask webcam.py for video overlay
+const SCORE_SERVER_URL = "http://localhost:5002";   // Flask correctForm.py for accuracy scores
 
 const Webcam = forwardRef((props, ref) => {
   const videoRef = useRef(null);
@@ -12,8 +13,8 @@ const Webcam = forwardRef((props, ref) => {
   const frameRequestRef = useRef(null);
   const waitingRef = useRef(false); // backpressure: only one in-flight frame
 
-  const [isActive, setIsActive] = useState(false);
   const [processedImg, setProcessedImg] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   /* =======================
      Webcam control
@@ -33,7 +34,7 @@ const Webcam = forwardRef((props, ref) => {
     connectSocket();
     startFrameCapture();
 
-    setIsActive(true);
+    props.setIsActive(true);
   };
 
   const stopWebcam = () => {
@@ -57,7 +58,7 @@ const Webcam = forwardRef((props, ref) => {
     }
 
     waitingRef.current = false;
-    setIsActive(false);
+    props.setIsActive(false);
   };
 
   /* =======================
@@ -120,7 +121,12 @@ const Webcam = forwardRef((props, ref) => {
             const b64 = dataUrl.split(",")[1] || "";
             console.debug("emit video_frame: bytes=", Math.round((b64.length * 3) / 4));
           } catch (e) {}
+          
+          // Send to webcam.py via Socket.IO (for processed overlay)
           socketRef.current.emit("video_frame", dataUrl);
+          
+          // ALSO send to correctForm.py via HTTP POST (for accuracy score)
+          sendFrameForScore(dataUrl);
         }
       } catch (e) {
         // ignore and continue
@@ -129,6 +135,37 @@ const Webcam = forwardRef((props, ref) => {
 
     // start loop
     frameRequestRef.current = requestAnimationFrame(frameLoop);
+  };
+
+  // Send frame to correctForm.py to get accuracy score with joint details
+  const sendFrameForScore = async (dataUrl) => {
+    try {
+      const response = await fetch(`${SCORE_SERVER_URL}/score-detailed`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          image: dataUrl
+        })
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        props.setError(data.error || 'Failed to get score');
+        props.setScore(null);
+        props.setJoints({});
+      } else {
+        const data = await response.json();
+        props.setScore(data.score);
+        props.setJoints(data.joints || {});
+        props.setError(null);
+      }
+    } catch (err) {
+      props.setError('Score service unavailable');
+      props.setScore(null);
+      props.setJoints({});
+    }
   };
 
   /* =======================
@@ -163,7 +200,7 @@ const Webcam = forwardRef((props, ref) => {
           </p>
         </div>
         <div className="card-header-action">
-          {!isActive ? (
+          {!props.isActive ? (
             <div className="action-button-wrapper">
               <button 
                 onClick={props.onStartCamera}
@@ -187,7 +224,7 @@ const Webcam = forwardRef((props, ref) => {
       <video ref={videoRef} style={{opacity:0, width:0, height:0}} autoPlay playsInline />
       <div className="card-content">
         <div className="video-container">
-          {!isActive && (
+          {!props.isActive && (
             <div className="webcam-off-message">
               Camera is off
             </div>
