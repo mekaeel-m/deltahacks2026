@@ -230,7 +230,7 @@ const Webcam = forwardRef((props, ref) => {
               Camera is off
             </div>
           )}
-          {isActive && processedImg && (
+          {props.isActive && processedImg && (
             <img
               src={processedImg}
               alt="Processed"

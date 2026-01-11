@@ -14,7 +14,7 @@ const SerialPort = require('serialport').SerialPort;
 const app = express();
 
 const PORT = 3001;
-const ARDUINO_PORT = 'COM7';  // Change this to your Arduino port (COM3, /dev/ttyUSB0, etc)
+const ARDUINO_PORT = 'COM6';  // Change this to your Arduino port (COM3, /dev/ttyUSB0, etc)
 const BAUD_RATE = 9600;
 
 let serialPort = null;
