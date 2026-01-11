@@ -1,0 +1,237 @@
+.metronome-panel {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 24px;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.metronome-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.metronome-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    letter-spacing: -0.02em;
+}
+
+.metronome-toggle {
+    padding: 0.5rem 1.25rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: "Inter", sans-serif;
+}
+
+.metronome-toggle:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.metronome-toggle.active {
+    background: #ef4444;
+    border-color: #ef4444;
+}
+
+.bpm-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 0;
+}
+
+.bpm-value {
+    font-size: 4rem;
+    font-weight: 800;
+    color: #ffffff;
+    font-family: "Inter", sans-serif;
+    line-height: 1;
+}
+
+.bpm-label {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: "Roboto Mono", monospace;
+    margin-top: 0.25rem;
+}
+
+.bpm-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bpm-btn {
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: "Roboto Mono", monospace;
+}
+
+.bpm-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.bpm-slider {
+    flex: 1;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+}
+
+.bpm-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #ffffff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: transform 0.15s ease;
+}
+
+.bpm-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+.bpm-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: #ffffff;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.tap-tempo-btn {
+    padding: 0.875rem 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    background: rgba(139, 92, 246, 0.15);
+    color: #a78bfa;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: "Inter", sans-serif;
+}
+
+.tap-tempo-btn:hover {
+    background: rgba(139, 92, 246, 0.25);
+    border-color: rgba(139, 92, 246, 0.5);
+}
+
+.tap-tempo-btn:active {
+    transform: scale(0.98);
+    background: rgba(139, 92, 246, 0.35);
+}
+
+.beat-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem 0;
+}
+
+.beat-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.1s ease;
+}
+
+.beat-dot.accent {
+    width: 20px;
+    height: 20px;
+    border-color: rgba(139, 92, 246, 0.4);
+}
+
+.beat-dot.active {
+    background: #ffffff;
+    border-color: #ffffff;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+.beat-dot.active.accent {
+    background: #a78bfa;
+    border-color: #a78bfa;
+    box-shadow: 0 0 20px rgba(167, 139, 250, 0.6);
+}
+
+.time-signature-selector {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.ts-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+    font-family: "Roboto Mono", monospace;
+}
+
+.ts-options {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.ts-btn {
+    flex: 1;
+    padding: 0.625rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: "Inter", sans-serif;
+}
+
+.ts-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ts-btn.active {
+    background: rgba(139, 92, 246, 0.2);
+    border-color: rgba(139, 92, 246, 0.4);
+    color: #a78bfa;
+}

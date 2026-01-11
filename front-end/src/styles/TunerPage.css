@@ -1,0 +1,57 @@
+.tuner-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.tuner-page-content {
+    flex: 1;
+    padding: 2rem 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.tuner-page-header {
+    text-align: center;
+    padding: 1rem 0 2rem;
+}
+
+.tuner-page-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    letter-spacing: -0.02em;
+}
+
+.tuner-page-subtitle {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0.75rem 0 0;
+    font-family: "Roboto Mono", monospace;
+}
+
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+@media (max-width: 900px) {
+    .tools-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .tuner-page-content {
+        padding: 1.5rem;
+    }
+    
+    .tuner-page-title {
+        font-size: 2rem;
+    }
+}

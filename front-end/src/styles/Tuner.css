@@ -1,0 +1,229 @@
+.tuner-panel {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 24px;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.tuner-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tuner-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    letter-spacing: -0.02em;
+}
+
+.tuner-toggle {
+    padding: 0.5rem 1.25rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: "Inter", sans-serif;
+}
+
+.tuner-toggle:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.tuner-toggle.active {
+    background: #ef4444;
+    border-color: #ef4444;
+}
+
+.tuner-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.note-display {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    padding: 1.5rem 2.5rem;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.note-display.in-tune {
+    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.note-display.close {
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.08);
+}
+
+.note-display.slightly-off {
+    border-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.08);
+}
+
+.note-display.off {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+}
+
+.note-name {
+    font-size: 4rem;
+    font-weight: 800;
+    color: #ffffff;
+    font-family: "Inter", sans-serif;
+    line-height: 1;
+}
+
+.note-octave {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: "Inter", sans-serif;
+}
+
+.cents-meter {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.cents-scale {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0.5rem;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-family: "Roboto Mono", monospace;
+}
+
+.cents-bar {
+    position: relative;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: visible;
+}
+
+.cents-center {
+    position: absolute;
+    left: 50%;
+    top: -4px;
+    bottom: -4px;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateX(-50%);
+}
+
+.cents-indicator {
+    position: absolute;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    background: #ffffff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: left 0.1s ease, background 0.2s ease;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.cents-indicator.in-tune {
+    background: #10b981;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+}
+
+.cents-indicator.close {
+    background: #22c55e;
+}
+
+.cents-indicator.slightly-off {
+    background: #f59e0b;
+}
+
+.cents-indicator.off {
+    background: #ef4444;
+}
+
+.frequency-display {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+}
+
+.frequency-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: "Roboto Mono", monospace;
+}
+
+.frequency-unit {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: "Roboto Mono", monospace;
+}
+
+.violin-strings {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.strings-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+    font-family: "Roboto Mono", monospace;
+}
+
+.strings-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+}
+
+.string-reference {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.string-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #ffffff;
+    font-family: "Inter", sans-serif;
+}
+
+.string-freq {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: "Roboto Mono", monospace;
+}
