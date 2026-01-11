@@ -57,6 +57,7 @@ const Webcam = forwardRef((props, ref) => {
     }
 
     waitingRef.current = false;
+    setProcessedImg(null);
     setIsActive(false);
   };
 
@@ -184,7 +185,7 @@ const Webcam = forwardRef((props, ref) => {
           )}
         </div>
       </div>
-      <video ref={videoRef} style={{opacity:0, width:0, height:0}} autoPlay playsInline />
+      <video ref={videoRef} style={{opacity:0, width:0, height:0, position:'absolute'}} autoPlay playsInline />
       <div className="card-content">
         <div className="video-container">
           {!isActive && (
@@ -192,15 +193,14 @@ const Webcam = forwardRef((props, ref) => {
               Camera is off
             </div>
           )}
+          {isActive && processedImg && (
+            <img
+              src={processedImg}
+              alt="Processed"
+              className="processed-frame"
+            />
+          )}
         </div>
-
-        {processedImg && (
-          <img
-            src={processedImg}
-            alt="Processed"
-            className="processed-frame"
-          />
-        )}
       </div>
         
       {/* Hidden canvas for frame capture */}
