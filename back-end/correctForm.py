@@ -536,6 +536,51 @@ def configure():
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+    
+    
+    # get + send calculate score of pose compared to baseline
+@app.route('/score', methods=['POST'])
+def get_pose_score():
+    """
+    Quick endpoint to get just the accuracy percentage score.
+    Accepts:
+        - JSON with base64 image: {"image": "base64_string"}
+        - Form data with image file
+    Returns:
+        JSON with accuracy percentage (0-100)
+    """
+    try:
+        comparator = get_comparator()
+        if not _baseline_loaded: 
+            return jsonify({
+                'score': 0, 
+                'error': 'No baseline loaded'
+            }), 400
+        image = None
+        
+        if request.is_json:
+            data = request.get_json() 
+            if 'image' not in data:
+                return jsonify({'score': 0, 'error': 'No image provided'}), 400
+            image = decode_base64_image(data['image'])
+        elif 'image' in request.files:
+            file = request.files['image']
+            file_bytes = np.frombuffer(file.read(), np.uint8)
+            image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+        else:
+            return jsonify({'score': 0, 'error': 'No image provided'}), 400
+
+        if image is None:
+            return jsonify({'score': 0, 'error': 'Failed to decode image'}), 400
+        
+        # Compare pose and return the score 
+        result = comparator.compare_image(image)
+        return jsonify({
+            'score': round(float(result.overall_accuracy),2)
+        })
+    except Exception as e:
+        return jsonify({'score': 0, 'error': str(e)}), 500
 
 
 if __name__ == '__main__':
