@@ -1,27 +1,96 @@
+/* Scroll Snap Container */
+.scroll-container {
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: auto;
+    transition: scroll-behavior 2s cubic-bezier(0.22, 1, 0.36, 1);
+    scrollbar-width: thin;
+    scrollbar-color: #3f3f3f transparent;
+}
+
+.scroll-container.smooth-scroll {
+    scroll-behavior: smooth;
+}
+
+.scroll-container::-webkit-scrollbar {
+    width: 3px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+    background: #3f3f3f;
+    border-radius: 4px;
+}
+
+.snap-section {
+    height: 100vh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+}
+
 .hero {
     min-height: calc(100vh - 64px);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     padding: 4rem 3rem;
     gap: 3rem;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .left-content {
-    flex: 7;
+    flex: 0 1 60%;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 .title {
-    font-size: 4rem;
-    font-weight: 700;
+    font-size: 9rem;
+    font-weight: 800;
     color: #ffffff;
     margin: 0;
-    line-height: 1.1;
+    line-height: 1.08;
     font-family: "Inter", sans-serif;
+}
+
+.description {
+    font-size: 2.1rem;
+    color: #ffffff;
+    line-height: 1.5;
+    margin: 0;
+    font-weight: 700;
+    font-family: "Inter", sans-serif;
+}
+
+.subdescription {
+    font-size: 1.35rem;
+    color: #ffffff;
+    line-height: 1.7;
+    margin: 0;
+    opacity: 0.92;
+    font-family: "Roboto Mono", monospace;
+}
+
+/* Webcam Section */
+.webcam-section {
+    height: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 4rem 3rem;
+    gap: 3rem;
+}
+
+.webcam-left {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
 .webcam-box {
@@ -31,28 +100,51 @@
     aspect-ratio: 1 / 0.75;
 }
 
-.right-content {
+.webcam-right {
     flex: 3;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     gap: 1.5rem;
 }
 
-.description {
+.settings-panel {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    padding: 2rem;
+    min-height: 300px;
+}
+
+.settings-title {
     font-size: 1.5rem;
-    color: #ffffff;
-    line-height: 1.6;
-    margin: 0;
     font-weight: 600;
+    color: #ffffff;
+    margin: 0;
     font-family: "Inter", sans-serif;
 }
 
-.subdescription {
-    font-size: 1.1rem;
-    color: #ffffff;
-    line-height: 1.7;
-    margin: 0;
-    opacity: 0.9;
-    font-family: "Roboto Mono", monospace;
+/* Tuner Section */
+.tuner-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 4rem 3rem;
+    gap: 3rem;
+}
+
+.tuner-left {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.tuner-right {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }

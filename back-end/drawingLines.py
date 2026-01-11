@@ -646,6 +646,112 @@ def landmarks_only():
         return jsonify({'error': str(e)}), 500
 
 
+# ============== Pose Comparison Endpoints ==============
+# These endpoints integrate baseline comparison functionality
+
+_pose_comparator = None
+_baseline_loaded = False
+
+def get_pose_comparator():
+    """Get or create the pose comparator instance."""
+    global _pose_comparator, _baseline_loaded
+    
+    if _pose_comparator is None:
+        try:
+            from pose_comparator import PoseComparator
+            baseline_path = os.path.join(os.path.dirname(__file__), 'output', 'baseline_data.json')
+            _pose_comparator = PoseComparator(baseline_path=baseline_path)
+            
+            if os.path.exists(baseline_path):
+                _pose_comparator.load_baseline()
+                _baseline_loaded = True
+        except ImportError:
+            return None
+    
+    return _pose_comparator
+
+
+@app.route('/compare-pose', methods=['POST'])
+def compare_pose_endpoint():
+    """
+    Compare a pose against the baseline and return accuracy flag.
+    
+    Accepts:
+        - JSON with base64 image: {"image": "base64_string"}
+        - Form data with image file
+    
+    Returns:
+        JSON with accuracy flag and detailed feedback
+    """
+    try:
+        comparator = get_pose_comparator()
+        
+        if comparator is None:
+            return jsonify({'error': 'Pose comparator not available. Install pose_comparator module.'}), 500
+        
+        if not _baseline_loaded:
+            return jsonify({
+                'error': 'No baseline loaded. Run baseline collection first.',
+                'hint': 'Run: python run_baseline_collection.py'
+            }), 400
+        
+        image = None
+        
+        if request.is_json:
+            data = request.get_json()
+            if 'image' not in data:
+                return jsonify({'error': 'No image provided'}), 400
+            image = decode_base64_image(data['image'])
+        
+        elif 'image' in request.files:
+            file = request.files['image']
+            file_bytes = np.frombuffer(file.read(), np.uint8)
+            image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+        
+        else:
+            return jsonify({'error': 'No image provided'}), 400
+        
+        if image is None:
+            return jsonify({'error': 'Failed to decode image'}), 400
+        
+        # Compare pose
+        result = comparator.compare_image(image)
+        flag = comparator.get_comparison_flag(result)
+        
+        return jsonify({
+            'success': True,
+            'flag': flag,
+            'detailed_feedback': {
+                'joint_feedback': [
+                    {
+                        'joint': fb.joint_name,
+                        'arm': fb.arm_name,
+                        'deviation': round(float(fb.deviation, 4)),
+                        'is_accurate': bool(fb.is_accurate),
+                        'message': fb.message
+                    }
+                    for fb in result.joint_feedback
+                ],
+                'angle_feedback': result.angle_feedback
+            }
+        })
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/baseline-status', methods=['GET'])
+def baseline_status():
+    """Check if baseline is loaded and ready for comparison."""
+    comparator = get_pose_comparator()
+    
+    return jsonify({
+        'baseline_loaded': _baseline_loaded,
+        'comparator_available': comparator is not None,
+        'message': 'Ready for pose comparison' if _baseline_loaded else 'Run baseline collection first'
+    })
+
+
 if __name__ == '__main__':
     # Run the Flask app
     port = int(os.environ.get('PORT', 5500))
@@ -657,5 +763,14 @@ if __name__ == '__main__':
     print("  POST /detect-arms - Detect arms and return base64 image")
     print("  POST /detect-arms-raw - Detect arms and return raw image")
     print("  POST /landmarks-only - Return only landmark coordinates")
+    print("  POST /compare-pose - Compare pose against baseline")
+    print("  GET  /baseline-status - Check baseline status")
+    
+    # Check baseline status on startup
+    comparator = get_pose_comparator()
+    if _baseline_loaded:
+        print("\n✓ Baseline loaded and ready for comparison")
+    else:
+        print("\n⚠ No baseline loaded. Run: python run_baseline_collection.py")
     
     app.run(host='0.0.0.0', port=port, debug=debug)
