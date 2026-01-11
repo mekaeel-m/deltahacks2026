@@ -38,13 +38,35 @@ const Webcam = forwardRef((props, ref) => {
 
   return (
     <div className="webcam-card">
-      <div className="card-header">
-        <h2 className="card-title">Pose Detection</h2>
-        <p className="card-description">
-          Start the camera to analyze your posture in real-time
-        </p>
+      <div className="card-header card-header-flex">
+        <div>
+          <h2 className="card-title">Pose Detection</h2>
+          <p className="card-description">
+            Start the camera to analyze your posture in real-time
+          </p>
+        </div>
+        <div className="card-header-action">
+          {!isActive ? (
+            <div className="action-button-wrapper">
+              <button 
+                onClick={props.onStartCamera}
+                className="action-button-inner"
+              >
+                Start Camera
+              </button>
+            </div>
+          ) : (
+            <div className="action-button-wrapper stop">
+              <button 
+                onClick={props.onStopCamera}
+                className="action-button-inner"
+              >
+                Stop Camera
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-
       <div className="card-content">
         <div className="video-container">
           <video
