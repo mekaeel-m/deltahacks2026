@@ -523,5 +523,10 @@ def handle_video_frame(data):
     else:
         logger.warning('Invalid frame received')
 
+@app.route("/health")
+def health():
+    return {"status": "ok"}
+
+
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, port=5001, use_reloader=False, debug=True)
