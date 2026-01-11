@@ -1,3 +1,9 @@
+from flask import Flask
+from flask_socketio import SocketIO, emit
+import base64
+import cv2
+import numpy as np
+
 """
 Flask app for arm pose detection and line drawing.
 Uses MediaPipe Tasks API for efficient pose detection from various camera angles.
@@ -19,7 +25,6 @@ import os
 import urllib.request
 
 app = Flask(__name__)
-CORS(app)
 
 # Custom drawing specs for arm lines
 ARM_LINE_COLOR = (0, 255, 0)  # Green in BGR
@@ -645,17 +650,45 @@ def landmarks_only():
 
         return jsonify({'error': str(e)}), 500
 
+socketio = SocketIO(app, cors_allowed_origins="*")  # Allow cross-origin for dev
+
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    print('Client disconnected')
+
+@socketio.on('video_frame')
+def handle_video_frame(data):
+    # data is a base64-encoded JPEG data URL (e.g., "data:image/jpeg;base64,...")
+    if data.startswith('data:image'):
+        # Extract base64 part
+        img_b64 = data.split(',')[1]
+    else:
+        img_b64 = data
+    
+    # Decode to bytes
+    img_bytes = base64.b64decode(img_b64)
+    
+    # Convert to numpy array and decode with OpenCV
+    nparr = np.frombuffer(img_bytes, np.uint8)
+    frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    
+    if frame is not None:
+        # Process the frame here (example: grayscale conversion)
+        processed_frame, _ = process_image(frame)
+        # Or apply any OpenCV/ML model, e.g., face detection
+        
+        # Optional: Encode and send processed frame back
+        _, buffer = cv2.imencode('.jpg', processed_frame)
+        processed_b64 = base64.b64encode(buffer).decode('utf-8')
+        emit('processed_frame', f'data:image/jpeg;base64,{processed_b64}')
+        
+        print('Frame processed')
+    else:
+        print('Invalid frame received')
 
 if __name__ == '__main__':
-    # Run the Flask app
-    port = int(os.environ.get('PORT', 5500))
-    debug = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
-    
-    print(f"Starting Arm Detection Flask App on port {port}")
-    print("Endpoints:")
-    print("  GET  /health - Health check")
-    print("  POST /detect-arms - Detect arms and return base64 image")
-    print("  POST /detect-arms-raw - Detect arms and return raw image")
-    print("  POST /landmarks-only - Return only landmark coordinates")
-    
-    app.run(host='0.0.0.0', port=port, debug=debug)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
