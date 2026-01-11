@@ -726,8 +726,8 @@ def compare_pose_endpoint():
                     {
                         'joint': fb.joint_name,
                         'arm': fb.arm_name,
-                        'deviation': round(fb.deviation, 4),
-                        'is_accurate': fb.is_accurate,
+                        'deviation': round(float(fb.deviation, 4)),
+                        'is_accurate': bool(fb.is_accurate),
                         'message': fb.message
                     }
                     for fb in result.joint_feedback

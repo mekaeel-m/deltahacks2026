@@ -404,10 +404,10 @@ class PoseComparator:
         """
         return {
             'is_accurate': result.is_accurate,
-            'accuracy_percentage': round(result.overall_accuracy, 2),
+            'accuracy_percentage': round(float(result.overall_accuracy, 2)),
             'accuracy_level': result.accuracy_level.value,
             'message': result.summary_message,
-            'needs_correction': not result.is_accurate,
+            'needs_correction': bool(not result.is_accurate),
             'corrections': [
                 {
                     'joint': fb.joint_name,
