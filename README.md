@@ -29,8 +29,5 @@ We plan to expand Violina beyond posture into context-aware feedback by integrat
 4. Run the frontend (React) from `front-end/`.
 5. Connect your webcam and begin a session.
 
-## Contributing
-We welcome contributions! Please open issues or submit pull requests for bug fixes, new features, or documentation improvements.
-
 ## License
 This project is licensed under the MIT License.
