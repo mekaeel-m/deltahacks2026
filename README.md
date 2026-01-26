@@ -25,8 +25,17 @@ We plan to expand Violina beyond posture into context-aware feedback by integrat
 ## Getting Started
 1. Clone the repository.
 2. Install backend dependencies from `back-end/requirements.txt`.
-3. Start the backend server (Flask).
+3. Start the backend servers (Flask).
+```
+python back-end/correctForm.py
+```
+```
+python back-end/webcam.py
+```
 4. Run the frontend (React) from `front-end/`.
+```
+npm run dev
+```
 5. Connect your webcam and begin a session.
 
 ## License
